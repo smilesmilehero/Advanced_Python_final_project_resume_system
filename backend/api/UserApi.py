@@ -26,12 +26,27 @@ class UserApi:
         app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
         app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
         app.add_url_rule('/apply_list', methods=['POST'], view_func=self.apply_list)
+        app.add_url_rule('/add_to_table', methods=['POST'], view_func=self.add_to_table)
 
         app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)
 
         # TODO
         pass
+
+    def add_to_table(self):
+        data = json.loads(request.get_json())
+        table_name = data['table']
+        data.pop('table')
+        print("{} {}".format(data, type(data)))
+        try:
+            self.service.data_merge(table_name, data)
+            status = "ok"
+            description = "success"
+        except Exception as e:
+            status = "err"
+            description = e
+        return {"status": status, 'description': description}
 
     def register_jobs(self):
         data = json.loads(request.get_json())
@@ -110,10 +125,16 @@ class UserApi:
     def test(self):
         data = json.loads(request.get_json())
         print('data', data)
-        text = data['text']
-        print('text', text)
-        data.pop('text')
-        rsp = self.service.test('jobs', data, text)
+        # text = data['text']
+        # # 分段 list text_list
+        # print('text', text)
+        # data.pop('text')
+        text_list = ['python', 'full-time']
+        salary_mode = 'monthSalary'
+        price = None
+        rsp = self.service.search_by_text_column_dict_salary('jobs', data, text_list, salary_mode, price)
+        # rsp = self.service.test('jobs', data)
+
         print('rsp', rsp)
         return {}
 

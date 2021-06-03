@@ -54,33 +54,38 @@ class JobRepo:
     def search_by_condition_or_version(self, column_dict: dict):
         with self.session() as session, session.begin():
             found_list = []
-            found_row = session.query(Job).filter_by(or_(**column_dict)).all()
+            command_list = []
+            for col, value in column_dict.items():
+                command_list.append(eval("Job.{}.contains('{}')".format(col, value)))
+            found_row = session.query(Job).filter(or_(*command_list)).all()
+
             for each_row in found_row:
                 found_list.append(each_row.to_dict())
             return found_list
 
-    def test(self, column_dict: dict, text: str):
+    def search_by_text_column_dict_salary(self, column_dict: dict, text_list: list, salary_mode: str, price: int):
         with self.session() as session, session.begin():
             found_list = []
-            # col_dict = {'title': 'ME', 'employment_type': 'full-time'}
             command_list = []
-            col_list = ['user_id', 'title', 'employment_type', 'applicants', 'description', 'qualifications_skills',
-                        'place', 'monthSalary']
-            value_test = text
-            text_list = ['python', 'full']
+            col_list = [col.name for col in Job.__table__.columns]
             for value in text_list:
-                print('==========', value)
                 for key in col_list:
-                    # if key == 'monthSalary':
-                    #     command_list.append(eval("Job.{} >= {}".format(key, value)))
-                    # else:
                     command_list.append(eval("Job.{}.contains('{}')".format(key, value)))
-                print(command_list)
 
-            # for key, value in col_dict.items():
-            #     command_list.append(eval("Job.{}.contains('{}')".format(key, value)))
-            # print(command_list)
-            found_row = session.query(Job).filter_by(**column_dict).filter(or_(*command_list)).all()
+            if price == None:
+                found_row = session.query(Job).filter_by(**column_dict).filter(or_(*command_list)).all()
+            else:
+                found_row = session.query(Job).filter_by(**column_dict).filter(or_(*command_list)).filter(
+                    eval("Job.{} >= {}".format(
+                        salary_mode, price))).all()
+            for each_row in found_row:
+                found_list.append(each_row.to_dict())
+            return found_list
+
+    def test(self, column_dict, text_list):
+        with self.session() as session, session.begin():
+            found_list = []
+            found_row = session.query(Job).filter(Job.monthSalary >= 38000).all()
             for each_row in found_row:
                 found_list.append(each_row.to_dict())
             return found_list

@@ -1,4 +1,5 @@
 from backend.entity.Company import Company
+from sqlalchemy import or_, and_
 
 
 class CompanyRepo:
@@ -26,3 +27,34 @@ class CompanyRepo:
     def del_by_condition(self, column_dict: dict):
         with self.session() as session, session.begin():
             session.query(Company).filter_by(**column_dict).delete()
+
+    def search_by_condition_or_version(self, column_dict: dict):
+        with self.session() as session, session.begin():
+            found_list = []
+            command_list = []
+            for col, value in column_dict.items():
+                command_list.append(eval("Company.{}.contains('{}')".format(col, value)))
+            found_row = session.query(Company).filter(or_(*command_list)).all()
+
+            for each_row in found_row:
+                found_list.append(each_row.to_dict())
+            return found_list
+
+    def search_by_text_column_dict_salary(self, column_dict: dict, text_list: list, salary_mode: str, price: int):
+        with self.session() as session, session.begin():
+            found_list = []
+            command_list = []
+            col_list = [col.name for col in Company.__table__.columns]
+            for value in text_list:
+                for key in col_list:
+                    command_list.append(eval("Company.{}.contains('{}')".format(key, value)))
+
+            if price == None:
+                found_row = session.query(Company).filter_by(**column_dict).filter(or_(*command_list)).all()
+            else:
+                found_row = session.query(Company).filter_by(**column_dict).filter(or_(*command_list)).filter(
+                    eval("Company.{} >= {}".format(
+                        salary_mode, price))).all()
+            for each_row in found_row:
+                found_list.append(each_row.to_dict())
+            return found_list

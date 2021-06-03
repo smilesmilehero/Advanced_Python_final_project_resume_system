@@ -87,16 +87,27 @@ class Service:
             res = {'status': 'err', 'description': e}
         return res
 
-    # Test=================
-    def test(self, table: str, column: dict, text: str):
-        # TODO
+    def search_by_text_column_dict_salary(self, table: str, column: dict, text_list: list, salary_mode: str, price: int):
         tables = {'users': self.user_repo,
                   'resumes': self.resume_repo,
                   'companys': self.company_repo,
                   'jobs': self.job_repo,
                   'applys': self.apply_repo}
         try:
-            found_data = tables[table].test(column, text)
+            found_data = tables[table].search_by_text_column_dict_salary(column, text_list, salary_mode, price)
+            res = {'status': 'ok', 'description': found_data}
+        except Exception as e:
+            res = {'status': 'err', 'description': e}
+        return res
+    # Test=================
+    def test(self, table: str, column: dict):
+        tables = {'users': self.user_repo,
+                  'resumes': self.resume_repo,
+                  'companys': self.company_repo,
+                  'jobs': self.job_repo,
+                  'applys': self.apply_repo}
+        try:
+            found_data = tables[table].search_by_condition_or_version(column)
             res = {'status': 'ok', 'description': found_data}
         except Exception as e:
             res = {'status': 'err', 'description': e}
