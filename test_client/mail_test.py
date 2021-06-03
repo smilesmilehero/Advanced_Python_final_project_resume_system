@@ -23,7 +23,7 @@ acc = input("請輸入gmail帳號：")
 password = input("請輸入密碼")
 
 acc = 't109368019@ntut.org.tw'
-password = 'a1299101'
+password = ''
 
 # 連線到SMTP Sevver
 import smtplib
