@@ -13,8 +13,17 @@ class Resume(Base):
     email = Column('email', String)
     education = Column('education', String)
     school = Column('school', String)
+    department = Column('department', String)
     skill = Column('skill', String)
     profile = Column('profile', String)
+    gender = Column('gender', String)
+    age = Column('age', Integer)
+    military = Column('military', String)
+    hourSalary = Column('hourSalary', Integer)
+    daySalary = Column('daySalary', Integer)
+    monthSalary = Column('monthSalary', Integer)
+    yearSalary = Column('yearSalary', Integer)
+    place = Column('place', String)
 
     def to_dict(self) -> dict:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}

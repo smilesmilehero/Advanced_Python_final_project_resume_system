@@ -36,35 +36,12 @@ class Service:
                   'jobs': self.job_repo,
                   'applys': self.apply_repo}
         try:
+            print('service', info_dict)
             tables[table].merge(info_dict)
             res = {'status': 'ok', 'description': info_dict}
         except Exception as e:
             res = {'status': 'err', 'description': e}
         return res
-
-    # def user_merge(self, info_dict: dict):
-    #     try:
-    #         self.user_repo.merge(info_dict)
-    #         res = {'status': 'ok', 'description': info_dict}
-    #     except Exception as e:
-    #         res = {'status': 'err', 'description': e}
-    #     return res
-    #
-    # def resume_merge(self, info_dict: dict):
-    #     # TODO
-    #     pass
-    #
-    # def company_merge(self, info_dict: dict):
-    #     # TODO
-    #     pass
-    #
-    # def job_merge(self, info_dict: dict):
-    #     # TODO
-    #     pass
-    #
-    # def apply_merge(self, info_dict: dict):
-    #     # TODO
-    #     pass
 
     # search =======
     def data_search(self, table: str, column: dict):
@@ -79,26 +56,6 @@ class Service:
         except Exception as e:
             res = {'status': 'err', 'description': e}
         return res
-
-    # def user_search(self, column: dict):
-    #     found_data = self.user_repo.search_by_condition(column)
-    #     return found_data
-    #
-    # def resume_search(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def company_search(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def job_search(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def apply_search(self, column: dict):
-    #     # TODO
-    #     pass
 
     # del =======
     def data_del(self, table: str, column: dict):
@@ -115,22 +72,32 @@ class Service:
             res = {'status': 'err', 'description': e}
         return res
 
-    # def user_del(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def resume_del(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def company_del(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def job_del(self, column: dict):
-    #     # TODO
-    #     pass
-    #
-    # def apply_del(self, column: dict):
-    #     # TODO
-    #     pass
+    # contain_search =======
+    def contain_search(self, table: str, column: dict, mode: str):
+        # TODO
+        tables = {'users': self.user_repo,
+                  'resumes': self.resume_repo,
+                  'companys': self.company_repo,
+                  'jobs': self.job_repo,
+                  'applys': self.apply_repo}
+        try:
+            found_data = tables[table].contain_search_by_condition(column, mode)
+            res = {'status': 'ok', 'description': found_data}
+        except Exception as e:
+            res = {'status': 'err', 'description': e}
+        return res
+
+    # Test=================
+    def test(self, table: str, column: dict, text: str):
+        # TODO
+        tables = {'users': self.user_repo,
+                  'resumes': self.resume_repo,
+                  'companys': self.company_repo,
+                  'jobs': self.job_repo,
+                  'applys': self.apply_repo}
+        try:
+            found_data = tables[table].test(column, text)
+            res = {'status': 'ok', 'description': found_data}
+        except Exception as e:
+            res = {'status': 'err', 'description': e}
+        return res

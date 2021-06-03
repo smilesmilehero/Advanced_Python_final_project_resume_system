@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/spie-lab-01/Desktop/python_final_0528/final')
+sys.path.append('/home/spie/PycharmProjects/Advanced_Python_final_project_resume_system')
 print(sys.path)
 import logging
 from sqlalchemy import create_engine

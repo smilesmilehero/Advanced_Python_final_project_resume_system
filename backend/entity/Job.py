@@ -15,9 +15,14 @@ class Job(Base):
     employment_type = Column('employment_type', String)
     applicants = Column('applicants', Integer)
     description = Column('description', String)
-    responsibilities = Column('responsibilities', String)
     qualifications_skills = Column('qualifications_skills', String)
     post_time = Column('post_time', DateTime, default=datetime.now)
+    hourSalary = Column('hourSalary', Integer)
+    daySalary = Column('daySalary', Integer)
+    monthSalary = Column('monthSalary', Integer)
+    yearSalary = Column('yearSalary', Integer)
+    place = Column('place', String)
+    phone = Column('phone', String)
 
     def to_dict(self) -> dict:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}

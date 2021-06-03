@@ -22,13 +22,28 @@ class UserApi:
     def __init__(self, app: Flask, service):
         self.service = service
         app.add_url_rule('/register_user_account', methods=['POST'], view_func=self.register_user_account)
+        app.add_url_rule('/register_jobs', methods=['POST'], view_func=self.register_jobs)
         app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
         app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
         app.add_url_rule('/apply_list', methods=['POST'], view_func=self.apply_list)
 
+        app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
+        app.add_url_rule('/test', methods=['POST'], view_func=self.test)
+
         # TODO
         pass
 
+    def register_jobs(self):
+        data = json.loads(request.get_json())
+        print("{} {}".format(data, type(data)))
+        try:
+            self.service.data_merge('jobs', data)
+            status = "ok"
+            description = "success"
+        except Exception as e:
+            status = "err"
+            description = e
+        return {"status": status, 'description': description}
 
     def register_user_account(self):
         data = json.loads(request.get_json())
@@ -40,7 +55,6 @@ class UserApi:
         except Exception as e:
             status = "err"
             description = e
-
         return {"status": status, 'description': description}
 
     def check_password(self):
@@ -48,44 +62,60 @@ class UserApi:
         rsp = self.service.data_search('users', data)
         if len(rsp["description"]) > 0:
             status = 'ok'
-            description = {'user_id':rsp['description'][0]['user_id']}
+            description = {'user_id': rsp['description'][0]['user_id']}
         else:
             status = 'err'
             description = 'password error'
         return {"status": status, 'description': description}
 
-    
     def job_search(self):
         print("sdfsd")
 
         data = json.loads(request.get_json())
-        print("data",data)
+        print("data", data)
         rsp = self.service.data_search('jobs', data)
+        print(rsp)
         if len(rsp["description"]) > 0:
             status = 'ok'
             description = rsp["description"]
-            for i,item in enumerate(rsp["description"]):
-                print('user_id=',type(item['user_id']))
+            for i, item in enumerate(rsp["description"]):
+                print('user_id=', type(item['user_id']))
                 send_data = {
-                #  "user_id":item['user_id']
-                "user_id":3       
+                    #  "user_id":item['user_id']
+                    "user_id": 3
                 }
-                print("send_data=",send_data)
+                print("send_data=", send_data)
                 rsp2 = self.service.data_search('companys', send_data)
-                print("rsp2=",rsp2)
+                print("rsp2=", rsp2)
                 for compant_info in rsp2['description'][0]:
-                    description[i][compant_info]=rsp2['description'][0][compant_info]
-            
-            
+                    description[i][compant_info] = rsp2['description'][0][compant_info]
+
             print(description)
-            
+
         else:
             status = 'err'
             description = 'password error'
         return {"status": status, 'description': description}
-    
 
     def apply_list(self):
+        pass
+
+    def contain_search(self):
+        data = json.loads(request.get_json())
+        print('data', data)
+        rsp = self.service.contain_search('jobs', data, data['mode'])
+        print('rsp', rsp)
+        return {}
+
+    def test(self):
+        data = json.loads(request.get_json())
+        print('data', data)
+        text = data['text']
+        print('text', text)
+        data.pop('text')
+        rsp = self.service.test('jobs', data, text)
+        print('rsp', rsp)
+        return {}
 
 
 if __name__ == "__main__":
