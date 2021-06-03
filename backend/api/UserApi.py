@@ -21,12 +21,13 @@ class UserApi:
 
     def __init__(self, app: Flask, service):
         self.service = service
+        app.add_url_rule('/add_to_table', methods=['POST'], view_func=self.add_to_table)
+
         app.add_url_rule('/register_user_account', methods=['POST'], view_func=self.register_user_account)
         app.add_url_rule('/register_jobs', methods=['POST'], view_func=self.register_jobs)
         app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
         app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
         app.add_url_rule('/apply_list', methods=['POST'], view_func=self.apply_list)
-        app.add_url_rule('/add_to_table', methods=['POST'], view_func=self.add_to_table)
 
         app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)

@@ -8,8 +8,9 @@ msg = email.message.EmailMessage()
 
 from_a = input("請輸入寄件人信箱：")
 to_b = input("請輸入收件人信箱：")
-from_a = 't109368019@ntut.org.tw'
-to_b = 't109368019@ntut.edu.tw'
+from_a = 'pythonjobsystem@gmail.com'
+# from_a = 't109368019@ntut.org.tw'
+to_b = 'kevin2938320@gmail.com'
 
 msg["From"] = from_a
 msg["To"] = to_b
@@ -22,8 +23,10 @@ msg.set_content("測試郵件純文字內容") #純文字信件內容
 acc = input("請輸入gmail帳號：")
 password = input("請輸入密碼")
 
-acc = 't109368019@ntut.org.tw'
-password = ''
+# acc = 't109368019@ntut.org.tw'
+acc = 'pythonjobsystem@gmail.com'
+password = 'pythonjobsystem'
+# password = 'a1299101'
 
 # 連線到SMTP Sevver
 import smtplib
@@ -33,3 +36,4 @@ server = smtplib.SMTP_SSL("smtp.gmail.com", 465)  # 建立gmail連驗
 server.login(acc, password)
 server.send_message(msg)
 server.close()  # 發送完成後關閉連線
+print("suc")
