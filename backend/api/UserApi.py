@@ -21,13 +21,13 @@ class UserApi:
 
     def __init__(self, app: Flask, service):
         self.service = service
+        # app.add_url_rule('/register_user_account', methods=['POST'], view_func=self.register_user_account)
+        # app.add_url_rule('/register_jobs', methods=['POST'], view_func=self.register_jobs)
         app.add_url_rule('/add_to_table', methods=['POST'], view_func=self.add_to_table)
-
-        app.add_url_rule('/register_user_account', methods=['POST'], view_func=self.register_user_account)
-        app.add_url_rule('/register_jobs', methods=['POST'], view_func=self.register_jobs)
         app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
         app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
         app.add_url_rule('/apply_list', methods=['POST'], view_func=self.apply_list)
+        app.add_url_rule('/search_from_table', methods=['POST'], view_func=self.search_from_table)
 
         app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)
@@ -37,11 +37,12 @@ class UserApi:
 
     def add_to_table(self):
         data = json.loads(request.get_json())
-        table_name = data['table']
+        table=data['table']
         data.pop('table')
+        print(data)
         print("{} {}".format(data, type(data)))
         try:
-            self.service.data_merge(table_name, data)
+            self.service.data_merge(table, data)
             status = "ok"
             description = "success"
         except Exception as e:
@@ -49,29 +50,48 @@ class UserApi:
             description = e
         return {"status": status, 'description': description}
 
-    def register_jobs(self):
+    def search_from_table(self):
         data = json.loads(request.get_json())
-        print("{} {}".format(data, type(data)))
+        table=data['table']
+        data.pop('table')
+        print(data)
         try:
-            self.service.data_merge('jobs', data)
-            status = "ok"
-            description = "success"
+            rsp = self.service.data_search(table, data)
+            if len(rsp['description'])>0:
+                status='OK'
+                description=rsp['description']
+            else:
+                status='fail'
+                description='not found'
         except Exception as e:
-            status = "err"
-            description = e
+            status="err"
+            description=e    
         return {"status": status, 'description': description}
+        
 
-    def register_user_account(self):
-        data = json.loads(request.get_json())
-        print("{} {}".format(data, type(data)))
-        try:
-            self.service.data_merge('users', data)
-            status = "ok"
-            description = "success"
-        except Exception as e:
-            status = "err"
-            description = e
-        return {"status": status, 'description': description}
+    # def register_jobs(self):
+    #     data = json.loads(request.get_json())
+    #     print("{} {}".format(data, type(data)))
+    #     try:
+    #         self.service.data_merge('jobs', data)
+    #         status = "ok"
+    #         description = "success"
+    #     except Exception as e:
+    #         status = "err"
+    #         description = e
+    #     return {"status": status, 'description': description}
+
+    # def register_user_account(self):
+    #     data = json.loads(request.get_json())
+    #     print("{} {}".format(data, type(data)))
+    #     try:
+    #         self.service.data_merge('users', data)
+    #         status = "ok"
+    #         description = "success"
+    #     except Exception as e:
+    #         status = "err"
+    #         description = e
+    #     return {"status": status, 'description': description}
 
     def check_password(self):
         data = json.loads(request.get_json())
@@ -85,35 +105,43 @@ class UserApi:
         return {"status": status, 'description': description}
 
     def job_search(self):
-        print("sdfsd")
 
         data = json.loads(request.get_json())
         print("data", data)
-        rsp = self.service.data_search('jobs', data)
-        print(rsp)
-        if len(rsp["description"]) > 0:
+        rsp_job = self.service.data_search('jobs', data)
+        print(rsp_job)
+        if len(rsp_job["description"]) > 0:
             status = 'ok'
-            description = rsp["description"]
-            for i, item in enumerate(rsp["description"]):
+            description = rsp_job["description"]
+            for i, item in enumerate(rsp_job["description"]):
                 print('user_id=', type(item['user_id']))
                 send_data = {
-                    #  "user_id":item['user_id']
-                    "user_id": 3
+                     "user_id":item['user_id']
+                    # "user_id": 3
                 }
                 print("send_data=", send_data)
-                rsp2 = self.service.data_search('companys', send_data)
-                print("rsp2=", rsp2)
-                for compant_info in rsp2['description'][0]:
-                    description[i][compant_info] = rsp2['description'][0][compant_info]
+                rsp_company = self.service.data_search('companys', send_data)
+                print("rsp_company", rsp_company)
+                for compant_info in rsp_company['description']:
+                    description[i][compant_info] = rsp_company['description'][compant_info]
 
             print(description)
 
         else:
-            status = 'err'
-            description = 'password error'
+            status = 'fail'
+            description = 'not found'
         return {"status": status, 'description': description}
 
+    def apply_add(self):
+        data = json.loads(request.get_json())
+        rsp = self.service.data_merge('applys', data)
+
+        pass
+
     def apply_list(self):
+        data = json.loads(request.get_json())
+        rsp = self.service.data_search('applys', data)
+
         pass
 
     def contain_search(self):

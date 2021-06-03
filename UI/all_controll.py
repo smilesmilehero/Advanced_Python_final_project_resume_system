@@ -141,11 +141,12 @@ class companyRegisterWindow(QMainWindow):  ##公司相關介面
         print("register_user_account--------------------")
         iscompany = True
         send_data = {
+            "table":"users",
             "account": self.email_input.text(),
             "password": self.password_input.text(),
             "iscompany": iscompany}
         send_data_json = json.dumps(send_data)
-        r = requests.post(url + 'register_user_account', json=send_data_json)
+        r = requests.post(url + 'add_to_table', json=send_data_json)
         # pass
 
 
@@ -299,12 +300,12 @@ class userRegisterWindow(QMainWindow):  ##一般用戶介面
         print("register_user_account--------------------")
         iscompany = False
         send_data = {
+            "table":"users",
             "account": self.email_input.text(),
             "password": self.password_input.text(),
             "iscompany": iscompany}
         send_data_json = json.dumps(send_data)
-        r = requests.post(url + 'register_user_account', json=send_data_json)
-
+        r = requests.post(url + 'add_to_table', json=send_data_json)
 
 class userLoginWindow(QMainWindow):
     def __init__(self):

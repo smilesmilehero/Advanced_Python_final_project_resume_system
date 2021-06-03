@@ -40,6 +40,14 @@ url = 'http://127.0.0.1:5000/'
 # =========================
 # =========================
 # companys
+#     "account":"kevin@gmail.com",
+#     "password":"123456",
+#     "iscompany":False}
+# send_data_json = json.dumps(send_data)
+# r = requests.post(url + 'register_user_account', json=send_data_json)
+
+# =========================
+
 # send_data = {
 #     "table": "companys",
 #     "user_id": 4,
@@ -129,3 +137,47 @@ r = requests.post(url + 'add_to_table', json=send_data_json)
 #             self.company_join_BTN.clicked.connect(self.change_page.backInit)
 # math = Main("Mathematics")
 #  UI Test======================================
+
+
+# =====================api test=========================
+###job search###
+# send_data = {
+#     "employment_type":"full-time",
+#     # "employment_type":"mange"
+# }
+# send_data_json = json.dumps(send_data)
+# r = requests.post(url + 'job_search', json=send_data_json)
+# r = json.loads(r.text)
+# print(r)
+
+
+###rigister user###
+# iscompany = False
+# send_data = {
+#     "table":"users",
+#     "account": 'an@gmail.com',
+#     "password": '123456',
+#     "iscompany": iscompany}
+# send_data_json = json.dumps(send_data)
+# r = requests.post(url + 'add_to_table', json=send_data_json)
+
+###apply add###
+# send_data = {
+#     'table':'applys',
+#     'user_id':3,
+#     'job_id':6,
+#     'originate':'user',
+#     'status':'Confirm'
+# }
+# send_data_json = json.dumps(send_data)
+# r = requests.post(url + 'add_to_table', json=send_data_json)
+
+###search apply###
+# send_data = {
+#     'table':'applys',
+#     'user_id':3,
+# }
+# send_data_json = json.dumps(send_data)
+# r = requests.post(url + 'search_from_table', json=send_data_json)
+# r = json.loads(r.text)
+# print(r)
