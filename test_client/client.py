@@ -99,8 +99,13 @@ url = 'http://127.0.0.1:5000/'
 # =========================
 # =========================
 # mail
-send_data = {"account": "google@gmail"}
+# send_data = {"account": "google@gmail"}
 # =========================
+# =========================
+# textSplit_complexSearch
+send_data = {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+# =========================
+
 
 # contain_search===========================
 # send_data = {'title': 'EE ', 'applicants': 25, 'mode': 'or'}

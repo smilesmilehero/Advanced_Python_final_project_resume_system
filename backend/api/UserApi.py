@@ -138,12 +138,12 @@ class UserApi:
                 password = account_rsp["description"][0]["password"]
                 search_condition = {"user_id": account_rsp["description"][0]["user_id"]}
                 if account_rsp["description"][0]["iscompany"]:
-                    register_rsp = self.service.data_search('companys', search_condition)
+                    rsp_detail = self.service.data_search('companys', search_condition)
                 else:
-                    register_rsp = self.service.data_search('resumes', search_condition)
-                if register_rsp["status"] == 'ok':
-                    if len(register_rsp["description"]) > 0:
-                        communication_mail = register_rsp["description"][0]["email"]
+                    rsp_detail = self.service.data_search('resumes', search_condition)
+                if rsp_detail["status"] == 'ok':
+                    if len(rsp_detail["description"]) > 0:
+                        communication_mail = rsp_detail["description"][0]["email"]
                         try:
                             send_mail(communication_mail, [data["account"], password])
                             status = 'ok'
@@ -177,12 +177,17 @@ class UserApi:
         # data = self.salary_transform(data)
         text_list = data["text"].split()  # 文字分割
         data.pop('text')
+        job_rsp = self.service.search_by_text_column_dict_salary("jobs", data, text_list, salary_mode, price)
+        if job_rsp['status'] == 'ok':
+            for index, each_row in enumerate(job_rsp['description']):
+                rsp_company = self.service.data_search('companys', {'user_id': each_row['user_id']})
+                job_rsp['description'][index] = {**job_rsp['description'][index], **rsp_company['description'][0]}
+                print(job_rsp['description'])
+        else:
+            print("job search err")
+        return job_rsp
 
-        rep = self.service.search_by_text_column_dict_salary("jobs", data, text_list, salary_mode, price)
-        print(rep)
-        return data
-
-    def test2(self):
+    def test(self):
         data = json.loads(request.get_json())
         print('data', data)
         # text = data['text']
