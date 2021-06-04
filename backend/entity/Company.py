@@ -12,7 +12,7 @@ class Company(Base):
     employees = Column('employees', String)
     industry = Column('industry', String)
     description = Column('description', String)
-    mail = Column('mail', String)
+    email = Column('email', String)
 
     def to_dict(self) -> dict:
         return {col.name: getattr(self, col.name) for col in self.__table__.columns}

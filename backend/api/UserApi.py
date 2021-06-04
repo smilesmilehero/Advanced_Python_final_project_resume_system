@@ -13,6 +13,7 @@ from sqlalchemy import create_engine
 from backend.service import Service
 import requests
 import json
+from backend.service.mail import send_mail
 
 url = 'http://127.0.0.1:5000/'
 
@@ -37,7 +38,7 @@ class UserApi:
 
     def add_to_table(self):
         data = json.loads(request.get_json())
-        table=data['table']
+        table = data['table']
         data.pop('table')
         print(data)
         print("{} {}".format(data, type(data)))
@@ -52,46 +53,23 @@ class UserApi:
 
     def search_from_table(self):
         data = json.loads(request.get_json())
-        table=data['table']
+        print("type", type(data), data)
+        table = data['table']
         data.pop('table')
         print(data)
         try:
             rsp = self.service.data_search(table, data)
-            if len(rsp['description'])>0:
-                status='OK'
-                description=rsp['description']
+            print(rsp)
+            if len(rsp['description']) > 0:
+                status = 'OK'
+                description = rsp['description']
             else:
-                status='fail'
-                description='not found'
+                status = 'fail'
+                description = 'not found'
         except Exception as e:
-            status="err"
-            description=e    
+            status = "err"
+            description = e
         return {"status": status, 'description': description}
-        
-
-    # def register_jobs(self):
-    #     data = json.loads(request.get_json())
-    #     print("{} {}".format(data, type(data)))
-    #     try:
-    #         self.service.data_merge('jobs', data)
-    #         status = "ok"
-    #         description = "success"
-    #     except Exception as e:
-    #         status = "err"
-    #         description = e
-    #     return {"status": status, 'description': description}
-
-    # def register_user_account(self):
-    #     data = json.loads(request.get_json())
-    #     print("{} {}".format(data, type(data)))
-    #     try:
-    #         self.service.data_merge('users', data)
-    #         status = "ok"
-    #         description = "success"
-    #     except Exception as e:
-    #         status = "err"
-    #         description = e
-    #     return {"status": status, 'description': description}
 
     def check_password(self):
         data = json.loads(request.get_json())
@@ -116,7 +94,7 @@ class UserApi:
             for i, item in enumerate(rsp_job["description"]):
                 print('user_id=', type(item['user_id']))
                 send_data = {
-                     "user_id":item['user_id']
+                    "user_id": item['user_id']
                     # "user_id": 3
                 }
                 print("send_data=", send_data)
@@ -151,7 +129,60 @@ class UserApi:
         print('rsp', rsp)
         return {}
 
-    def test(self):
+    def test_send_mail(self):
+        # V {"account": "jk@gmail"}
+        data = json.loads(request.get_json())
+        account_rsp = self.service.data_search('users', data)
+        if account_rsp["status"] == 'ok':
+            if len(account_rsp["description"]) > 0:
+                password = account_rsp["description"][0]["password"]
+                search_condition = {"user_id": account_rsp["description"][0]["user_id"]}
+                if account_rsp["description"][0]["iscompany"]:
+                    register_rsp = self.service.data_search('companys', search_condition)
+                else:
+                    register_rsp = self.service.data_search('resumes', search_condition)
+                if register_rsp["status"] == 'ok':
+                    if len(register_rsp["description"]) > 0:
+                        communication_mail = register_rsp["description"][0]["email"]
+                        try:
+                            send_mail(communication_mail, [data["account"], password])
+                            status = 'ok'
+                            description = 'send to {}'.format(communication_mail)
+                        except Exception as e:
+                            description = e
+                else:
+                    status = 'err'
+                    description = 'detail sql search err'
+            else:
+                status = 'err'
+                description = "Account not Found"
+        else:
+            status = 'err'
+            description = 'account sql search err'
+        return {"status": status, 'description': description}
+
+    def test_salary_transform(self):
+        # V input => {"text": "python", "user_id": 5, "place": "台北市", "salary": ["yearSalary", 1200000]}
+        data = json.loads(request.get_json())
+        data = self.salary_transform(data)
+        print(data)
+        return data
+
+    def test_textSplit_complexSearch(self):
+        # V input => {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+        data = json.loads(request.get_json())
+        salary_mode = data["salary"][0]
+        price = data["salary"][1]
+        data.pop('salary')
+        # data = self.salary_transform(data)
+        text_list = data["text"].split()  # 文字分割
+        data.pop('text')
+
+        rep = self.service.search_by_text_column_dict_salary("jobs", data, text_list, salary_mode, price)
+        print(rep)
+        return data
+
+    def test2(self):
         data = json.loads(request.get_json())
         print('data', data)
         # text = data['text']
@@ -166,6 +197,33 @@ class UserApi:
 
         print('rsp', rsp)
         return {}
+
+    def salary_transform(self, data: dict):
+        try:
+            ori_salary = data["salary"]
+        except:
+            return data
+        data.pop("salary")
+        salary_mode = ori_salary[0]
+        salary = ori_salary[1]
+
+        salary_dict = dict()
+        if salary_mode == "yearSalary":
+            base_salary = salary / 12 / 30 / 8
+        elif salary_mode == "monthSalary":
+            base_salary = salary / 30 / 8
+        elif salary_mode == "daySalary":
+            base_salary = salary / 8
+        elif salary_mode == "hourSalary":
+            base_salary = salary
+
+        salary_dict["hourSalary"] = round(base_salary)
+        salary_dict["daySalary"] = round(base_salary * 8)
+        salary_dict["monthSalary"] = round(base_salary * 8 * 30)
+        salary_dict["yearSalary"] = round(base_salary * 8 * 30 * 12)
+
+        data = {**data, **salary_dict}  # 合併dict
+        return data
 
 
 if __name__ == "__main__":

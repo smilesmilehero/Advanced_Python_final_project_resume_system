@@ -79,7 +79,7 @@ url = 'http://127.0.0.1:5000/'
 #     "phone": "0912345678"
 # }
 # modify
-send_data = {"table": "jobs", "job_id": 6, "applicants": 0}
+# send_data = {"table": "jobs", "job_id": 6, "applicants": 0}
 # =========================
 # =========================
 # applys
@@ -93,6 +93,14 @@ send_data = {"table": "jobs", "job_id": 6, "applicants": 0}
 #     "status": "Reject"
 # }
 # =========================
+# =========================
+# salary transform
+# send_data = {"text": "python", "user_id": 5, "place": "台北市", "salary": ["yearSalary", 1200000]}
+# =========================
+# =========================
+# mail
+send_data = {"account": "google@gmail"}
+# =========================
 
 # contain_search===========================
 # send_data = {'title': 'EE ', 'applicants': 25, 'mode': 'or'}
@@ -104,12 +112,14 @@ send_data = {"table": "jobs", "job_id": 6, "applicants": 0}
 # send_data_json = json.dumps(send_data)
 # r = requests.post(url + 'job_search', json=send_data_json)
 # test===========================
-
+# send_data = {"table": "users", "user_id": 2}
+# send_data = {"table": "companys", "user_id": 2}
 # send_data = {'user_id': 3, 'title': 'ME engineer'}
 send_data_json = json.dumps(send_data)
-r = requests.post(url + 'add_to_table', json=send_data_json)
-
-# r = json.loads(r.text)
+print(type(send_data_json), send_data_json)
+r = requests.post(url + 'test', json=send_data_json)
+r = json.loads(r.text)
+print(r)
 # print(r['description'])
 
 # print("{} {} {}".format(r, type(r.text), r.text))
