@@ -103,7 +103,7 @@ url = 'http://127.0.0.1:5000/'
 # =========================
 # =========================
 # textSplit_complexSearch
-send_data = {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+# send_data = {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
 # =========================
 
 
@@ -120,11 +120,11 @@ send_data = {"text": "python matlab engineer", "place": "台北市", "salary": [
 # send_data = {"table": "users", "user_id": 2}
 # send_data = {"table": "companys", "user_id": 2}
 # send_data = {'user_id': 3, 'title': 'ME engineer'}
-send_data_json = json.dumps(send_data)
-print(type(send_data_json), send_data_json)
-r = requests.post(url + 'test', json=send_data_json)
-r = json.loads(r.text)
-print(r)
+# send_data_json = json.dumps(send_data)
+# print(type(send_data_json), send_data_json)
+# r = requests.post(url + 'test', json=send_data_json)
+# r = json.loads(r.text)
+# print(r)
 # print(r['description'])
 
 # print("{} {} {}".format(r, type(r.text), r.text))
@@ -157,8 +157,7 @@ print(r)
 # =====================api test=========================
 ###job search###
 # send_data = {
-#     "employment_type":"full-time",
-#     # "employment_type":"mange"
+#     "employment_type":"full-time"
 # }
 # send_data_json = json.dumps(send_data)
 # r = requests.post(url + 'job_search', json=send_data_json)
@@ -196,3 +195,26 @@ print(r)
 # r = requests.post(url + 'search_from_table', json=send_data_json)
 # r = json.loads(r.text)
 # print(r)
+
+
+###user apply search ###
+
+# send_data={
+#     'user_id':1
+# }
+# data_json = json.dumps(send_data)
+# r = requests.post(url + 'apply_search', json=data_json)
+# r = json.loads(r.text)
+# for item in r['description']:
+
+#     print(item)
+
+
+
+####resume search####
+
+send_data={"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+data_json = json.dumps(send_data)
+r = requests.post(url + 'resume_textSplit_complexSearch', json=data_json)
+r = json.loads(r.text)
+print(r)

@@ -25,12 +25,14 @@ class UserApi:
         # app.add_url_rule('/register_user_account', methods=['POST'], view_func=self.register_user_account)
         # app.add_url_rule('/register_jobs', methods=['POST'], view_func=self.register_jobs)
         app.add_url_rule('/add_to_table', methods=['POST'], view_func=self.add_to_table)
-        app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
-        app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
-        app.add_url_rule('/apply_list', methods=['POST'], view_func=self.apply_list)
         app.add_url_rule('/search_from_table', methods=['POST'], view_func=self.search_from_table)
-
-        app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
+        app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
+        # app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
+        app.add_url_rule('/apply_search', methods=['POST'], view_func=self.apply_search)
+        app.add_url_rule('/test_send_mail', methods=['POST'], view_func=self.test_send_mail)
+        app.add_url_rule('/test_textSplit_complexSearch', methods=['POST'], view_func=self.test_textSplit_complexSearch)
+        app.add_url_rule('/resume_textSplit_complexSearch', methods=['POST'], view_func=self.resume_textSplit_complexSearch)
+        # app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)
 
         # TODO
@@ -110,24 +112,57 @@ class UserApi:
             description = 'not found'
         return {"status": status, 'description': description}
 
-    def apply_add(self):
+    # def apply_add(self):
+    #     data = json.loads(request.get_json())
+    #     rsp = self.service.data_merge('applys', data)
+
+    #     pass
+
+
+
+#apply_search returns (apply info) ,(company info) and each (job info) of a certain user's applications  #
+    def apply_search(self):                        
         data = json.loads(request.get_json())
-        rsp = self.service.data_merge('applys', data)
+        rsp_apply = self.service.data_search('applys', data)
+        print('apply=',rsp_apply)
+        if rsp_apply["status"] == 'ok':
+            if len(rsp_apply["description"]) > 0:
+                description=rsp_apply['description']
+                for i, item in enumerate(rsp_apply["description"]):
+                    send_data = {
+                        "job_id": item['job_id']
+                    }
+                    print("send_data=", send_data)
+                    rsp_job_info = self.service.data_search('jobs', send_data)
+                    print('\n')
+                    print("rsp_job_info=", rsp_job_info)
+                    print('\n')
+                    company_id=rsp_job_info['description'][0]['user_id']
+                    rsp_job_info['description'][0].pop('user_id')
+                    send_data = {
+                        "user_id": company_id
+                    }
+                    rsp_company_info = self.service.data_search('companys', send_data)
 
-        pass
+                    for job_info in rsp_job_info['description'][0]:
+                        description[i][job_info] = rsp_job_info['description'][0][job_info]
+                    rsp_company_info['description'][0].pop('user_id')
+                    for company_info in rsp_company_info['description'][0]:
+                        description[i][company_info] = rsp_company_info['description'][0][company_info]
 
-    def apply_list(self):
-        data = json.loads(request.get_json())
-        rsp = self.service.data_search('applys', data)
+                return { 'status':'OK','description':description }
+                
+            else:
+                return { 'status':'fail','description':'not found'}
+                
 
-        pass
 
-    def contain_search(self):
+    def contain_search(self,data):
         data = json.loads(request.get_json())
         print('data', data)
         rsp = self.service.contain_search('jobs', data, data['mode'])
         print('rsp', rsp)
-        return {}
+        return rsp
 
     def test_send_mail(self):
         # V {"account": "jk@gmail"}
@@ -186,6 +221,22 @@ class UserApi:
         else:
             print("job search err")
         return job_rsp
+
+    def resume_textSplit_complexSearch(self):
+        # V input => {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+        data = json.loads(request.get_json())
+        salary_mode = data["salary"][0]
+        price = data["salary"][1]
+        data.pop('salary')
+        # data = self.salary_transform(data)
+        text_list = data["text"].split()  # 文字分割
+        data.pop('text')
+        resume_rsp = self.service.search_by_text_column_dict_salary("resumes", data, text_list, salary_mode, price)
+        if len(resume_rsp['description'])>0:
+           return resume_rsp
+        else:
+            return {'status':'fail','descrition':'not found'}
+        
 
     def test(self):
         data = json.loads(request.get_json())
