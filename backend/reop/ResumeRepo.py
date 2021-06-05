@@ -25,13 +25,17 @@ class ResumeRepo:
         with self.session() as session, session.begin():
            session.query(Resume).filter_by(**column_dict).delete()
 
-    def search_by_condition_or_version(self, column_dict: dict):
+    def contain_search_two_version(self, column_dict: dict, mode: str):
         with self.session() as session, session.begin():
             found_list = []
             command_list = []
             for col, value in column_dict.items():
                 command_list.append(eval("Resume.{}.contains('{}')".format(col, value)))
-            found_row = session.query(Resume).filter(or_(*command_list)).all()
+
+            if mode == 'or':
+                found_row = session.query(Resume).filter(or_(*command_list)).all()
+            else:
+                found_row = session.query(Resume).filter(and_(*command_list)).all()
 
             for each_row in found_row:
                 found_list.append(each_row.to_dict())
