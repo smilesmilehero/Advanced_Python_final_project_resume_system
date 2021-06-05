@@ -73,15 +73,27 @@ class Service:
         return res
 
     # contain_search =======
-    def contain_search(self, table: str, column: dict, mode: str):
-        # TODO
+    # def contain_search(self, table: str, column: dict, mode: str):
+    #     tables = {'users': self.user_repo,
+    #               'resumes': self.resume_repo,
+    #               'companys': self.company_repo,
+    #               'jobs': self.job_repo,
+    #               'applys': self.apply_repo}
+    #     try:
+    #         found_data = tables[table].contain_search_by_condition(column, mode)
+    #         res = {'status': 'ok', 'description': found_data}
+    #     except Exception as e:
+    #         res = {'status': 'err', 'description': e}
+    #     return res
+
+    def contain_search_two_version(self, table: str, column: dict, mode: str):
         tables = {'users': self.user_repo,
                   'resumes': self.resume_repo,
                   'companys': self.company_repo,
                   'jobs': self.job_repo,
                   'applys': self.apply_repo}
         try:
-            found_data = tables[table].contain_search_by_condition(column, mode)
+            found_data = tables[table].contain_search_two_version(column, mode)
             res = {'status': 'ok', 'description': found_data}
         except Exception as e:
             res = {'status': 'err', 'description': e}
