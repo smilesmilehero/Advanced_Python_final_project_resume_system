@@ -29,8 +29,8 @@ class UserApi:
         app.add_url_rule('/check_password', methods=['POST'], view_func=self.check_password)
         # app.add_url_rule('/job_search', methods=['POST'], view_func=self.job_search)
         app.add_url_rule('/apply_search', methods=['POST'], view_func=self.apply_search)
-        app.add_url_rule('/test_send_mail', methods=['POST'], view_func=self.test_send_mail)
-        app.add_url_rule('/test_textSplit_complexSearch', methods=['POST'], view_func=self.test_textSplit_complexSearch)
+        app.add_url_rule('/send_mail', methods=['POST'], view_func=self.send_mail)
+        app.add_url_rule('/job_textSplit_complexSearch', methods=['POST'], view_func=self.job_textSplit_complexSearch)
         app.add_url_rule('/resume_textSplit_complexSearch', methods=['POST'], view_func=self.resume_textSplit_complexSearch)
         # app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)
@@ -45,13 +45,13 @@ class UserApi:
         print(data)
         print("{} {}".format(data, type(data)))
         try:
-            self.service.data_merge(table, data)
-            status = "ok"
-            description = "success"
+            rsp=self.service.data_merge(table, data)
+            status = rsp['status']
+            description = str(rsp['description'])
         except Exception as e:
             status = "err"
             description = e
-        return {"status": status, 'description': description}
+        return {'status': status, 'description': description}
 
     def search_from_table(self):
         data = json.loads(request.get_json())
@@ -164,7 +164,7 @@ class UserApi:
         print('rsp', rsp)
         return rsp
 
-    def test_send_mail(self):
+    def send_mail(self):
         # V {"account": "jk@gmail"}
         data = json.loads(request.get_json())
         account_rsp = self.service.data_search('users', data)
@@ -204,7 +204,7 @@ class UserApi:
         return data
 
 ###
-    def test_textSplit_complexSearch(self):
+    def job_textSplit_complexSearch(self):
         # V input => {"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
         data = json.loads(request.get_json())
         salary_mode = data["salary"][0]

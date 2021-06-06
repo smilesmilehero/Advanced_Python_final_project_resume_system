@@ -15,6 +15,9 @@ def changePage(page):
     wiget.setCurrentIndex(page)
 
 
+user_id=None
+isCompany=False
+
 class presonalInitialWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -42,6 +45,7 @@ class userRegisterWindow(QMainWindow):                                          
 
         self.send_btn.clicked.connect(self.check_psw)
         self.go_login_BTN.clicked.connect(lambda : changePage(2))
+        
 
     def clear_and_changePage(self):
         changePage(0)
@@ -62,20 +66,25 @@ class userRegisterWindow(QMainWindow):                                          
                     if len(self.password_input.text()) >= 6 and len(self.password_input.text()) <=15:
                         if len(self.confirm_password_input.text()) >= 6 and len(self.confirm_password_input.text()) <=15:
                             if self.password_input.text() == self.confirm_password_input.text():
-                                reply = QMessageBox.information(self, '信息', '您的註冊已完成，點擊跳轉至登入頁面', QMessageBox.Ok | QMessageBox.Close)
-                                
-                                # self.register_company_account()       ############call上傳
-                                
-                                # print(reply)
-                                if reply == 1024:
-                                    changePage(2)
-                                    self.email_input.clear()
-                                    self.password_input.clear()
-                                    self.confirm_password_input.clear()
-                                    self.school_input.clear()
-                                    self.info_label.setText('')                       
+                                rsp=self.register_company_account()       ############call上傳
+                                if rsp=='err':
+                                    
+                                    self.info_label.setText('帳號已被使用')
                                 else:
-                                    changePage(0)
+                                    self.create_resume()
+                                    reply = QMessageBox.information(self, '信息', '您的註冊已完成，點擊跳轉至登入頁面', QMessageBox.Ok | QMessageBox.Close)
+                                    
+                                    
+                                    # print(reply)
+                                    if reply == 1024:
+                                        changePage(2)
+                                        self.email_input.clear()
+                                        self.password_input.clear()
+                                        self.confirm_password_input.clear()
+                                        self.school_input.clear()
+                                        self.info_label.setText('')                       
+                                    else:
+                                        changePage(0)
                             else:
                                 self.info_label.setText('兩密碼不一致')
                         else:
@@ -85,20 +94,40 @@ class userRegisterWindow(QMainWindow):                                          
                 else:
                     self.info_label.setText('Email格式錯誤')
 
-    # def register_company_account(self):
-    #     print("register_user_account--------------------")
-    #     iscompany = True
-    #     send_data = {
-    #         "table":"users",
-    #         "account": self.email_input.text(),
-    #         "password": self.password_input.text(),
+    def register_company_account(self):
+        print("register_user_account--------------------")
+        # iscompany = False
+        send_data = {
+            "table":"users",
+            "account": self.email_input.text(),
+            "password": self.password_input.text(),
+            # "school": self.school_input.text(),                             #####多學校上傳
+            "iscompany": isCompany}
+        send_data_json = json.dumps(send_data)
+        r = requests.post(url + 'add_to_table', json=send_data_json)
+        r=json.loads(r.text)
+        return r['status']
 
-    #         "school": self.school_input.text(),                             #####多學校上傳
+    def create_resume(self):
+        send_data={
+            "table":"users",
+            "account": self.email_input.text()
+        }
+        send_data_json = json.dumps(send_data)
+        r = requests.post(url + 'search_from_table', json=send_data_json)
+        r=json.loads(r.text)
+        # print(r)
+        send_data={
+            "table":"resumes",
+            'user_id':r['description'][0]['user_id'],
+            'email':r['description'][0]['account']
+        }
+        send_data_json = json.dumps(send_data)
+        r = requests.post(url + 'add_to_table', json=send_data_json)
+        r=json.loads(r.text)
+        print(r)
+        
 
-    #         "iscompany": iscompany}
-    #     send_data_json = json.dumps(send_data)
-    #     r = requests.post(url + 'add_to_table', json=send_data_json)
-                
 class userLoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -113,7 +142,7 @@ class userLoginWindow(QMainWindow):
         self.go_join_BTN.clicked.connect(lambda : changePage(1))
 
     def checkLogin(self):       ########################################完成取得資料後寫帳密核對
-        changePage(4)
+        # changePage(4)
 
         # # print("check login--------------------")
         # # send_data = {"account":self.email_phone_input.text()}
@@ -124,22 +153,25 @@ class userLoginWindow(QMainWindow):
         # # r = requests.post(url + 'test', json=send_data_json)
         # # print(r)
         # # print(r.text)
-
-        # iscompany = True
-        # print("company_checkLogin--------------------")
-        # send_data = {
-        #     "account": self.email_phone_input.text(),
-        #     "password": self.password_input.text(),
-        #     "iscompany":iscompany    }
-        # send_data_json = json.dumps(send_data)
-        # r = requests.post(url + 'check_password', json=send_data_json)
-        # r = json.loads(r.text)
-        # print(r)
-        # if r["status"] == 'ok':
-        #     changePage(4)
-        # else:  ########################################錯誤訊息
-        #     # TODO
-        #     pass
+        print('pwd=',self.password_input.text())
+        # iscompany = False
+        print("company_checkLogin--------------------")
+        send_data = {
+            "account": self.email_input.text(),
+            "password": self.password_input.text(),
+            "iscompany":isCompany    }
+        send_data_json = json.dumps(send_data)
+        r = requests.post(url + 'check_password', json=send_data_json)
+        r = json.loads(r.text)
+        global user_id
+        user_id=r['description']['user_id']
+        print(r)
+        if r["status"] == 'ok':
+            userResumeWindow().loading_data()         #導入初始對應資料(如果有的話)
+            changePage(4)
+        else:  ########################################錯誤訊息
+            # TODO
+            pass
 
 class forgetPSWindow(QMainWindow):    #####other
     def __init__(self):
@@ -150,7 +182,17 @@ class forgetPSWindow(QMainWindow):    #####other
         self.reset_BTN.clicked.connect(self.check_data_exist)
 
     def check_data_exist(self):         ##############################確認其資料後，進入更改介面判斷式
-        changePage(5)
+        # changePage(5)
+        send_data={
+            'account':self.email_phone_input.text()
+        }
+        send_data = json.dumps(send_data)
+
+        r=requests.post(url+'send_mail', json=send_data)
+
+        r=json.loads(r.text)
+        print(r)
+        changePage(2) ########回到登入頁面
 
 class changePSWindow(QMainWindow):
     def __init__(self):
@@ -185,7 +227,7 @@ class userResumeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI/user_resume.ui', self)
-
+        
         self.phone_input.setMaxLength(10)
         self.phone_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
 
@@ -200,11 +242,13 @@ class userResumeWindow(QMainWindow):
         
         # self.loading_data()         #導入初始對應資料(如果有的話)
 
+
         self.logout_BTN.clicked.connect(lambda : self.logout_function())
         self.work_search_BTN.clicked.connect(self.search_job)
         self.update_modify_BTN.clicked.connect(self.update_modify)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
         self.mail_BTN.clicked.connect(self.go_mail)
+        
 
     def reset(self):
         self.name_input.clear()
@@ -249,10 +293,10 @@ class userResumeWindow(QMainWindow):
         else:
             self.salary_type_comboBox.setCurrentIndex(0)
             self.salary_input.setEnabled(False)
-            hourSalary = ''
-            daySalary = ''
-            monthSalary = ''
-            yearSalary = ''
+            hourSalary = 0
+            daySalary = 0
+            monthSalary = 0
+            yearSalary = 0
         
         if self.gender_comboBox.currentText() == '-':
             gender = ''
@@ -274,10 +318,14 @@ class userResumeWindow(QMainWindow):
         else:
             place = self.place_comboBox.currentText()
             
-        send_data = {'name' : self.name_input.text(), 'phone' : self.phone_input.text(), 'gender' : gender, 'age' : self.age_input.text(), 'address' : self.address_input.toPlainText(), 'soilder' : self.soilder_comboBox.currentText(), 'education' : education, 'email' : self.email_input.text(), 'school' : self.school_input.text(), 'department' : department, 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary, 'skill' : self.skill_input.toPlainText(), 'profile' : self.profile_input.toPlainText()}
+        send_data = {'table':'resumes','user_id':user_id,'name' : self.name_input.text(), 'phone' : self.phone_input.text(), 'gender' : gender, 'age' : self.age_input.text(), 'address' : self.address_input.toPlainText(), 'military' : self.soilder_comboBox.currentText(), 'education' : education, 'email' : self.email_input.text(), 'school' : self.school_input.text(), 'department' : department, 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary, 'skill' : self.skill_input.toPlainText(), 'profile' : self.profile_input.toPlainText()}
         print(send_data)
 
-        ######################################################這裡上傳資料
+        send_data_json=json.dumps(send_data)
+        r = requests.post(url + 'add_to_table', json=send_data_json)
+        r=json.loads(r.text)
+        print(r)
+
 
     def leave_page(self):
         if self.name_input.isEnabled() == True:
@@ -321,9 +369,41 @@ class userResumeWindow(QMainWindow):
         self.skill_input.setEnabled(switch)
         self.profile_input.setEnabled(switch)
 
-    # def loading_data(self):       ##############################剛進入履歷畫面的資料導入，若有資訊的話
-    #     if                                  #####如果導入是有資料的話，預設所有控建為不可用
+    def loading_data(self):       ##############################剛進入履歷畫面的資料導入，若有資訊的話
+        # if                                  #####如果導入是有資料的話，預設所有控建為不可用
         # self.control_input(False)
+        # global user_id
+        print(user_id)
+        send_data={
+            'table':'resumes',
+            # 'name':'王小明'
+            'user_id':user_id
+        }
+        send_data_json=json.dumps(send_data)
+        r=requests.post(url+'search_from_table',json=send_data_json)
+        r=json.loads(r.text)
+        print(r)
+        self.name_input.setText(r['description'][0]['name'])
+        self.phone_input.setText(r['description'][0]['phone'])
+        self.gender_comboBox.setCurrentText(r['description'][0]['gender'])
+        self.age_input.setText(str(r['description'][0]['age']))
+        self.address_input.setText(r['description'][0]['address'])
+        self.soilder_comboBox.setCurrentText(r['description'][0]['military'])
+        self.education_comboBox.setCurrentText(r['description'][0]['education'])
+        self.email_input.setText(r['description'][0]['email'])
+        self.school_input.setText(r['description'][0]['school'])
+        self.department_comboBox.setCurrentText(r['description'][0]['department'])
+        self.place_comboBox.setCurrentText(r['description'][0]['place'])
+        if r['description'][0]['yearSalary']==0:
+            self.salary_type_comboBox.setCurrentText('面議')
+            self.salary_input.setText('')
+
+        else:
+            self.salary_type_comboBox.setCurrentText('月薪')
+            self.salary_input.setText(r['description'][0]['monthSalary'])
+        self.skill_input.setText(r['description'][0]['skill'])
+        self.profile_input.setText(r['description'][0]['profile'])
+
         
 
     def update_modify(self):
@@ -430,13 +510,17 @@ class userSearchEngineWindow(QMainWindow):
         else:
             self.salary_type_comboBox.setCurrentIndex(0)
             self.salary_input.setEnabled(False)
-            hourSalary = ''
-            daySalary = ''
-            monthSalary = ''
-            yearSalary = ''
-        
-        send_data = {'keyword' : self.keyword_input.text(), 'department' : department, 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary}
+            hourSalary = 0
+            daySalary = 0
+            monthSalary = 0
+            yearSalary = 0
+
+        send_data = {'text' : self.keyword_input.text(), 'place' : place, 'salary':['hourSalary',hourSalary]}
         print(send_data)
+        send_data_json=json.dumps(send_data)
+        r=requests.post(url+'job_textSplit_complexSearch',json=send_data_json)
+        r=json.loads(r.text)
+        print(r)
 
         ####################################################################上傳搜尋資料
 

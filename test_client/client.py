@@ -99,7 +99,7 @@ url = 'http://127.0.0.1:5000/'
 # =========================
 # =========================
 # mail
-# send_data = {"account": "google@gmail"}
+send_data = {"account": "google@gmail"}
 # =========================
 # =========================
 # textSplit_complexSearch
@@ -120,10 +120,10 @@ url = 'http://127.0.0.1:5000/'
 # send_data = {"table": "users", "user_id": 2}
 # send_data = {"table": "companys", "user_id": 2}
 # send_data = {'user_id': 3, 'title': 'ME engineer'}
-# send_data_json = json.dumps(send_data)
-# print(type(send_data_json), send_data_json)
-# r = requests.post(url + 'test', json=send_data_json)
-# r = json.loads(r.text)
+send_data_json = json.dumps(send_data)
+print(type(send_data_json), send_data_json)
+r = requests.post(url + 'send_mail', json=send_data_json)
+r = json.loads(r.text)
 # print(r)
 # print(r['description'])
 
@@ -213,8 +213,26 @@ url = 'http://127.0.0.1:5000/'
 
 ####resume search####
 
-send_data={"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
-data_json = json.dumps(send_data)
-r = requests.post(url + 'resume_textSplit_complexSearch', json=data_json)
-r = json.loads(r.text)
+# send_data={"text": "python matlab engineer", "place": "台北市", "salary": ["hourSalary", 190]}
+# data_json = json.dumps(send_data)
+# r = requests.post(url + 'resume_textSplit_complexSearch', json=data_json)
+# r = json.loads(r.text)
+# print(r)
+
+
+
+send_data={
+    'account':'jk@gmail'
+}
+send_data = json.dumps(send_data)
+
+r=requests.post(url+'send_mail', json=send_data)
+
+r=json.loads(r.text)
 print(r)
+
+
+# send_data_json = json.dumps(send_data)
+# print(type(send_data_json), send_data_json)
+# r = requests.post(url + 'send_mail', json=send_data_json)
+# r = json.loads(r.text)
