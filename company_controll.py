@@ -1,6 +1,4 @@
 import sys
-sys.path.append('/home/spie/Desktop/1092_Python_Object_Oriented/final/0606UI/Advanced_Python_final_project_resume_system-user_UI0606')
-
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLineEdit, QMessageBox

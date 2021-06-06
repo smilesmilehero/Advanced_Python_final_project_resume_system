@@ -240,7 +240,7 @@ class userResumeWindow(QMainWindow):
                 monthSalary = int(self.salary_input.text())
                 yearSalary = monthSalary * 12
                 daySalary = monthSalary // 22
-                hourSalary = daySalary // 8\\
+                hourSalary = daySalary // 8
             elif self.salary_type_comboBox.currentIndex() == 4:
                 yearSalary = int(self.salary_input.text())
                 monthSalary = yearSalary // 12
