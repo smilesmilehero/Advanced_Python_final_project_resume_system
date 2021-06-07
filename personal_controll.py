@@ -403,7 +403,7 @@ class userResumeWindow(QMainWindow):
             self.salary_input.setText(str(r['description'][0]['monthSalary']))
         self.skill_input.setText(r['description'][0]['skill'])
         self.profile_input.setText(r['description'][0]['profile'])
-
+    #
         
 
     def update_modify(self):
