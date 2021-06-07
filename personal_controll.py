@@ -27,7 +27,7 @@ class userRegisterWindow(QMainWindow):                                          
     def __init__(self):
         super().__init__()
         loadUi('UI\\user_register.ui', self)
-        self.back_BTN.clicked.connect(lambda : self.clear_and_changePage())
+        self.back_BTN.clicked.connect(lambda : self.clear_and_changePage(0))
         self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
         
         self.password_input.setMaxLength(15)
@@ -37,22 +37,22 @@ class userRegisterWindow(QMainWindow):                                          
         self.confirm_password_input.setMaxLength(15)
         self.confirm_password_input.setEchoMode(QLineEdit.PasswordEchoOnEdit)
         self.confirm_password_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9]+$")))
-        
-        self.school_input.setMaxLength(30)
+
 
         self.send_btn.clicked.connect(self.check_psw)
-        self.go_login_BTN.clicked.connect(lambda : changePage(2))
+        self.go_login_BTN.clicked.connect(lambda : self.clear_and_changePage(2))
 
-    def clear_and_changePage(self):
-        changePage(0)
+    def clear_and_changePage(self, page):
         self.email_input.clear()
+        self.password_input.clear()
         self.confirm_password_input.clear()
-        self.school_input.clear()
+        self.info_label.setText('')  
+        changePage(page)
         
 
 
     def check_psw(self):
-        if self.email_input.text() == '' or self.password_input.text() == '' or self.confirm_password_input.text() == '' or self.school_input.text() == '':
+        if self.email_input.text() == '' or self.password_input.text() == '' or self.confirm_password_input.text() == '':
             self.info_label.setText('請檢察是否有空欄位')
         else:
             if len(self.email_input.text()) <= 5:
@@ -68,14 +68,9 @@ class userRegisterWindow(QMainWindow):                                          
                                 
                                 # print(reply)
                                 if reply == 1024:
-                                    changePage(2)
-                                    self.email_input.clear()
-                                    self.password_input.clear()
-                                    self.confirm_password_input.clear()
-                                    self.school_input.clear()
-                                    self.info_label.setText('')                       
+                                    self.clear_and_changePage(2)                      
                                 else:
-                                    changePage(0)
+                                    self.clear_and_changePage(0)
                             else:
                                 self.info_label.setText('兩密碼不一致')
                         else:
@@ -103,17 +98,25 @@ class userLoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI\\user_login.ui', self)
-        self.back_BTN.clicked.connect(lambda : changePage(0))
+        self.back_BTN.clicked.connect(lambda : self.reset_leavePage(0))
         self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
         self.password_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9]+$")))
         self.password_input.setMaxLength(15)
         self.password_input.setEchoMode(QLineEdit.Password)
-        self.go_forget_ps_BTN.clicked.connect(lambda : changePage(3))
+        self.go_forget_ps_BTN.clicked.connect(lambda : self.reset_leavePage(3))
         self.login_BTN.clicked.connect(self.checkLogin)
-        self.go_join_BTN.clicked.connect(lambda : changePage(1))
+        self.go_join_BTN.clicked.connect(lambda : self.reset_leavePage(1))
+
+    def reset_leavePage(self, page):
+        changePage(page)
+        self.email_input.clear()
+        self.password_input.clear()
+        self.info_label.setText('')
+
 
     def checkLogin(self):       ########################################完成取得資料後寫帳密核對
-        changePage(4)
+        # if  ########################################帳密相符
+        self.reset_leavePage(4)
 
         # # print("check login--------------------")
         # # send_data = {"account":self.email_phone_input.text()}
@@ -143,43 +146,23 @@ class userLoginWindow(QMainWindow):
 
 class forgetPSWindow(QMainWindow):    #####other
     def __init__(self):
-        super(forgetPSWindow, self).__init__()
+        super().__init__()
         loadUi('UI\\forget_password.ui', self)
-        self.back_BTN.clicked.connect(lambda : changePage(0))
-        self.email_phone_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
+        self.back_BTN.clicked.connect(lambda : self.reset_leavePage(0))
+        self.email_input.setMaxLength(50)
+        self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
         self.reset_BTN.clicked.connect(self.check_data_exist)
 
-    def check_data_exist(self):         ##############################確認其資料後，進入更改介面判斷式
-        changePage(5)
+    def reset_leavePage(self, page):
+        changePage(page)
+        self.email_input.clear()
+        self.info_label.setText('')
 
-class changePSWindow(QMainWindow):
-    def __init__(self):
-        super(changePSWindow, self).__init__()
-        loadUi('UI\\change_interface.ui', self)
-        self.password_input.setMaxLength(15)
-        self.password_input.setEchoMode(QLineEdit.PasswordEchoOnEdit)
-        self.password_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9]+$")))
-        self.confirm_password_input.setMaxLength(15)
-        self.confirm_password_input.setEchoMode(QLineEdit.PasswordEchoOnEdit)
-        self.confirm_password_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9]+$")))
-        self.finish_BTN.clicked.connect(self.send_reset_data)
-        self.back_BTN.clicked.connect(lambda : changePage(0))
-
-    def send_reset_data(self):
-        if len(self.password_input.text()) >=6 and len(self.password_input.text()) <= 15:
-            if self.password_input.text() == self.confirm_password_input.text():
-                reply = QMessageBox.information(self, '信息', '您的密碼重設完成，請重新登入', QMessageBox.Ok)
-                # print(reply)
-                
-                self.password_input.clear()
-                self.confirm_password_input.clear()
-                self.info_label.setText('')
-                changePage(0)
-
-            else:
-                self.info_label.setText('兩組密碼不一致')
-        else:
-            self.info_label.setText('請確定密碼長度正確')     
+    def check_data_exist(self):         ##############################確認其資料後，進入更改介面
+        # if    ######################################################判斷成功後，跳至下一頁面
+        self.reset_leavePage(5)
+        # else:
+        # self.info_label.setText('資料不相符，請確認後再輸入')
         
 class userResumeWindow(QMainWindow):
     def __init__(self):
@@ -200,11 +183,11 @@ class userResumeWindow(QMainWindow):
         
         # self.loading_data()         #導入初始對應資料(如果有的話)
 
-        self.logout_BTN.clicked.connect(lambda : self.logout_function())
-        self.work_search_BTN.clicked.connect(self.search_job)
+        self.logout_BTN.clicked.connect(lambda : self.leavePage_function(0))
+        self.work_search_BTN.clicked.connect(lambda : self.leavePage_function(5))
         self.update_modify_BTN.clicked.connect(self.update_modify)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
-        self.mail_BTN.clicked.connect(self.go_mail)
+        self.mail_BTN.clicked.connect(lambda : self.leavePage_function(7))
 
     def reset(self):
         self.name_input.clear()
@@ -216,7 +199,7 @@ class userResumeWindow(QMainWindow):
         self.education_comboBox.setCurrentIndex(0)
         self.email_input.clear()
         self.school_input.clear()
-        self.department_comboBox.setCurrentIndex(0)
+        self.department_input.setText('')
         self.place_comboBox.setCurrentIndex(0)
         self.salary_type_comboBox.setCurrentIndex(0)
         self.salary_input.setEnabled(False)
@@ -264,20 +247,19 @@ class userResumeWindow(QMainWindow):
         else:
             education = self.education_comboBox.currentText()
 
-        if self.department_comboBox.currentText() == '請選擇科系類別':
-            department = ''
-        else:
-            department = self.department_comboBox.currentText()
-
         if self.place_comboBox.currentText() == '請選擇上班地點':
             place = ''
         else:
             place = self.place_comboBox.currentText()
             
-        send_data = {'name' : self.name_input.text(), 'phone' : self.phone_input.text(), 'gender' : gender, 'age' : self.age_input.text(), 'address' : self.address_input.toPlainText(), 'soilder' : self.soilder_comboBox.currentText(), 'education' : education, 'email' : self.email_input.text(), 'school' : self.school_input.text(), 'department' : department, 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary, 'skill' : self.skill_input.toPlainText(), 'profile' : self.profile_input.toPlainText()}
+        send_data = {'name' : self.name_input.text(), 'phone' : self.phone_input.text(), 'gender' : gender, 'age' : self.age_input.text(), 'address' : self.address_input.toPlainText(), 'soilder' : self.soilder_comboBox.currentText(), 'education' : education, 'email' : self.email_input.text(), 'school' : self.school_input.text(), 'department' : self.department_input.text(), 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary, 'skill' : self.skill_input.toPlainText(), 'profile' : self.profile_input.toPlainText()}
         print(send_data)
 
         ######################################################這裡上傳資料
+
+        # def loading_data(self):       ##############################剛進入履歷畫面的資料導入，若有資訊的話
+    #     if                                  #####如果導入是有資料的話，預設所有控建為不可用
+        # self.control_input(False)
 
     def leave_page(self):
         if self.name_input.isEnabled() == True:
@@ -286,7 +268,7 @@ class userResumeWindow(QMainWindow):
         else:
             return -1
 
-    def logout_function(self):
+    def leavePage_function(self, page):
         reply = self.leave_page()
         # print(reply)
         if reply == 2048:
@@ -294,15 +276,16 @@ class userResumeWindow(QMainWindow):
             self.upload_data()
 
             self.reset()
-            changePage(0)
+            changePage(page)
         elif reply == 8388608:
-            # print('aaaaa')
+            self.reset()
+            changePage(page)
+        elif reply == -1:
+            self.reset()
+            changePage(page)
+        else:
             changePage(0)           ###不用會卡視窗
             changePage(4)
-            # QMessageBox.accept()
-        else:
-            self.reset()
-            changePage(0)
         
 
     def control_input(self, switch):
@@ -315,15 +298,11 @@ class userResumeWindow(QMainWindow):
         self.education_comboBox.setEnabled(switch)
         self.email_input.setEnabled(switch)
         self.school_input.setEnabled(switch)
-        self.department_comboBox.setEnabled(switch)
+        self.department_input.setEnabled(switch)
         self.place_comboBox.setEnabled(switch)
         self.salary_type_comboBox.setEnabled(switch)
         self.skill_input.setEnabled(switch)
         self.profile_input.setEnabled(switch)
-
-    # def loading_data(self):       ##############################剛進入履歷畫面的資料導入，若有資訊的話
-    #     if                                  #####如果導入是有資料的話，預設所有控建為不可用
-        # self.control_input(False)
         
 
     def update_modify(self):
@@ -341,41 +320,14 @@ class userResumeWindow(QMainWindow):
         else:
             self.salary_input.setEnabled(False)
 
-
-    def search_job(self):
-        reply = self.leave_page()
-        if reply == 2048:
-
-            self.upload_data()
-
-
-            self.reset()
-            changePage(6)
-        elif reply == 8388608:
-            changePage(0)           ###不用會卡視窗
-            changePage(4)
-        else:
-            self.reset()
-            changePage(6)
-
-    def go_mail(self):
-        reply = self.leave_page()
-        if reply == 2048:
-            self.upload_data()
-            self.reset()
-            changePage(8)
-        elif reply == 8388608:
-            changePage(0)           ###不用會卡視窗
-            changePage(4)
-        else:
-            self.reset()
-            changePage(8)
         
 class userSearchEngineWindow(QMainWindow):    
     def __init__(self):
         super().__init__()
         loadUi('UI\\user_search_engine.ui', self)
-        self.back_BTN.clicked.connect(lambda : changePage(4))
+        self.back_BTN.clicked.connect(lambda : self.reset_leavePage(4))
+        self.search_BTN.setStyleSheet("QPushButton{border-image: url(UI/magnifying_glass.png)}")
+
         self.salary_input.setMaxLength(12)
         self.salary_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
         self.search_BTN.clicked.connect(self.send_search)
@@ -387,19 +339,15 @@ class userSearchEngineWindow(QMainWindow):
         else:
             self.salary_input.setEnabled(False)
 
-    def reset(self):
+    def reset_leavePage(self, page):
         self.keyword_input.clear()
-        self.department_comboBox.setCurrentIndex(0)
         self.place_comboBox.setCurrentIndex(0)
         self.salary_type_comboBox.setCurrentIndex(0)
         self.salary_input.setEnabled(False)
         self.salary_input.clear()
+        changePage(page)
         
     def send_search(self):
-        if self.department_comboBox.currentText() == '-':
-            department = ''
-        else:
-            department = self.department_comboBox.currentText()
         
         if self.place_comboBox.currentText() == '請選擇上班地點':
             place = ''
@@ -435,13 +383,12 @@ class userSearchEngineWindow(QMainWindow):
             monthSalary = ''
             yearSalary = ''
         
-        send_data = {'keyword' : self.keyword_input.text(), 'department' : department, 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary}
+        send_data = {'keyword' : self.keyword_input.text(), 'place' : place, 'hourSalary' : hourSalary, 'daySalary' : daySalary, 'monthSalary' : monthSalary, 'yearSalary' : yearSalary}
         print(send_data)
 
         ####################################################################上傳搜尋資料
 
-        changePage(7)
-        self.reset()
+        self.reset_leavePage(6)
         
 
 class userSearchWindow(QMainWindow):    
@@ -450,7 +397,7 @@ class userSearchWindow(QMainWindow):
         loadUi('UI\\user_search_interface.ui', self)
         self.example_data = []
         self.logout_BTN.clicked.connect(lambda : self.leave_reset(0))
-        self.back_BTN.clicked.connect(lambda : self.leave_reset(6))
+        self.back_BTN.clicked.connect(lambda : self.leave_reset(5))
         self.listWidget.itemClicked.connect(self.go_see_detail)
 
         self.load_data_show()
@@ -482,7 +429,7 @@ class userSearchWindow(QMainWindow):
         
         ######################################################################################################將點選到的資料上傳
 
-        changePage(9)
+        changePage(8)
         
 
 class userMailWindow(QMainWindow):    
@@ -550,8 +497,8 @@ class lookCompanyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI\\user_look_requirement.ui', self)
-        self.back_BTN.clicked.connect(self.leave_reset)
-        # self.send_resume_BTN.clicked.connect(self.send_resume)
+        self.back_BTN.clicked.connect(lambda : self.leave_reset(6))
+        self.send_resume_BTN.clicked.connect(self.send_invite)
         self.load_data()
 
     # def send_resume(self):
@@ -562,8 +509,7 @@ class lookCompanyWindow(QMainWindow):
         example_data = {'job_name' : '軟體工程師', 'post_date' : '2021/01/30', 'job_type' : '工讀', 'phone' : '0223917925', 'applicant' : '6' , 'address' : '台北市中正區', 'place' : '台北市', 'salary' : '40000', 'skill': 'python, java', 'profile' : '你知道的'}
         self.company_name_show.setText(example_data['job_name'])
         self.type_comboBox.setCurrentIndex(self.type_comboBox.findText(example_data['job_type']))
-        time_info =  example_data['post_date'].replace('/', '.')
-        self.post_dateEdit.setDisplayFormat(time_info)
+        self.dateEdit_2.setDate(QtCore.QDate.fromString(example_data['post_date'], 'yyyy/MM/dd'))
         self.telephone_input.setText(example_data['phone'])
         self.applicant_show.setText(example_data['applicant'])
         self.address_input.setPlainText(example_data['address'])
@@ -573,12 +519,18 @@ class lookCompanyWindow(QMainWindow):
         self.skill_require_input.setPlainText(example_data['skill'])
         self.profile_input.setPlainText(example_data['profile'])
         
+    def send_invite(self):
+            ###########################################################################送出面試邀約
 
+            #########################################################################避免重複投同項工作?
 
-    def leave_reset(self):
+            reply = QMessageBox.information(self, '提示', '成功發送邀約，請耐心等待對方回應', QMessageBox.Ok | QMessageBox.Close)
+
+    def leave_reset(self, page):
+        # self.dateEdit_2.disconnect()
         self.company_name_show.clear()
         self.type_comboBox.setCurrentIndex(0)
-        self.post_dateEdit.setDisplayFormat('1.1.2001')
+        self.dateEdit_2.setDate(QtCore.QDate.fromString('2001/01/01', 'yyyy/MM/dd'))
         self.telephone_input.clear()
         self.applicant_show.setText('0')
         self.address_input.clear()
@@ -587,7 +539,7 @@ class lookCompanyWindow(QMainWindow):
         self.skill_require_input.clear()
         self.profile_input.clear()
 
-        changePage(7)
+        changePage(page)
 
 
 
@@ -600,7 +552,6 @@ if __name__ == "__main__":
     addUserLoginPage = userLoginWindow()
     addForgetPassPage = forgetPSWindow()
     addUserResumePage = userResumeWindow()
-    addChangeInterface = changePSWindow()
     addUserSearchEngine = userSearchEngineWindow()
     addUserSearchResult = userSearchWindow()
     addUserMailPage = userMailWindow()
@@ -612,13 +563,12 @@ if __name__ == "__main__":
     wiget.addWidget(addUserLoginPage)           ###燈入頁 2
     wiget.addWidget(addForgetPassPage)          ###忘記密碼 3
     wiget.addWidget(addUserResumePage)          ###履歷表頁 4
-    wiget.addWidget(addChangeInterface)         ###改密碼頁 5
-    wiget.addWidget(addUserSearchEngine)        ###搜尋頁  6
-    wiget.addWidget(addUserSearchResult)        ###結果頁  7
-    wiget.addWidget(addUserMailPage)            ###小郵箱  8
-    wiget.addWidget(addLookCompanyInfo)         ###看工作資訊  9
+    wiget.addWidget(addUserSearchEngine)        ###搜尋頁  5
+    wiget.addWidget(addUserSearchResult)        ###結果頁  6
+    wiget.addWidget(addUserMailPage)            ###小郵箱  7
+    wiget.addWidget(addLookCompanyInfo)         ###看工作資訊  8
 
-    # wiget.setFixedSize(800,600)
+    wiget.setMinimumSize(800, 600)
 
     wiget.show()
 

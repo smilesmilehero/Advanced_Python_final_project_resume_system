@@ -37,6 +37,102 @@
         <property name="spacing">
          <number>12</number>
         </property>
+        <item row="4" column="2">
+         <widget class="QComboBox" name="salary_type_comboBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <underline>false</underline>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="tabletTracking">
+           <bool>false</bool>
+          </property>
+          <property name="toolTipDuration">
+           <number>-1</number>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhNone</set>
+          </property>
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+          <item>
+           <property name="text">
+            <string>面議</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>時薪</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>日薪</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>月薪</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>年薪</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="4" column="3" colspan="2">
+         <widget class="QLineEdit" name="salary_input">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
+          <property name="placeholderText">
+           <string>期望薪資</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="5">
          <widget class="QPushButton" name="search_BTN">
           <property name="sizePolicy">
@@ -55,13 +151,13 @@
            <cursorShape>PointingHandCursor</cursorShape>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-image:url(C:/Users/jordy/Desktop/final_project/UI/magnifying-glass.png)</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string/>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -102,20 +198,7 @@
           </property>
          </spacer>
         </item>
-        <item row="2" column="0">
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>13</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLabel" name="label_25">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -135,197 +218,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="label_13">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>16</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>工作性質</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="1">
-         <widget class="QComboBox" name="department_comboBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <underline>false</underline>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="tabletTracking">
-           <bool>false</bool>
-          </property>
-          <property name="toolTipDuration">
-           <number>-1</number>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhNone</set>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-          <property name="currentText">
-           <string>-</string>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <item>
-           <property name="text">
-            <string>-</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>農、林、漁、牧業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>礦業及土石採取業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>製造業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>電力及燃氣供應業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>用水供應及污染整治業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>營建工程業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>批發及零售業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>運輸及倉儲業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>住宿及餐飲業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>出版影音及資通訊業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>金融及保險業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>不動產業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>專業、科學及技術服務業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>支援服務業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>公共行政及國防；強制性社會安全</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>教育業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>醫療保健及社會工作服務業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>藝術、娛樂及休閒服務業</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>工程學門</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>資訊科學學門</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>自然科學學門</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>環境保護學門</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>其他服務業</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="3" column="1">
          <widget class="QLabel" name="label_27">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -345,7 +238,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QComboBox" name="place_comboBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
@@ -489,101 +382,18 @@
           </item>
          </widget>
         </item>
-        <item row="5" column="2">
-         <widget class="QComboBox" name="salary_type_comboBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+        <item row="2" column="0">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="minimumSize">
+          <property name="sizeHint" stdset="0">
            <size>
-            <width>0</width>
-            <height>30</height>
+            <width>13</width>
+            <height>20</height>
            </size>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>50</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <underline>false</underline>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="tabletTracking">
-           <bool>false</bool>
-          </property>
-          <property name="toolTipDuration">
-           <number>-1</number>
-          </property>
-          <property name="inputMethodHints">
-           <set>Qt::ImhNone</set>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-          <item>
-           <property name="text">
-            <string>面議</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>時薪</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>日薪</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>月薪</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>年薪</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item row="5" column="3" colspan="2">
-         <widget class="QLineEdit" name="salary_input">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>250</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-           </font>
-          </property>
-          <property name="placeholderText">
-           <string>期望薪資</string>
-          </property>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </item>
