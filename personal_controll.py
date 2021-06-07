@@ -164,14 +164,16 @@ class userLoginWindow(QMainWindow):
         r = requests.post(url + 'check_password', json=send_data_json)
         r = json.loads(r.text)
         global user_id
-        user_id=r['description']['user_id']
         print(r)
         if r["status"] == 'ok':
+            user_id=r['description']['user_id']
             userResumeWindow().loading_data()         #導入初始對應資料(如果有的話)
+            self.info_label.setText('')
             changePage(4)
         else:  ########################################錯誤訊息
             # TODO
-            pass
+            # pass
+            self.info_label.setText('請檢查帳號密碼')
 
 class forgetPSWindow(QMainWindow):    #####other
     def __init__(self):
@@ -444,12 +446,17 @@ class userResumeWindow(QMainWindow):
             self.upload_data()
             self.reset()
             changePage(8)
+            print(reply)
+            userMailWindow().search_apply()
         elif reply == 8388608:
             changePage(0)           ###不用會卡視窗
             changePage(4)
+            print(reply)
         else:
+            print(reply)
             self.reset()
             changePage(8)
+            userMailWindow().search_apply()
         
 class userSearchEngineWindow(QMainWindow):    
     def __init__(self):
@@ -523,7 +530,7 @@ class userSearchEngineWindow(QMainWindow):
         r=requests.post(url+'job_textSplit_complexSearch',json=send_data_json)
         r=json.loads(r.text)
         print(r)
-
+        userSearchWindow().load_data_show()
         ####################################################################上傳搜尋資料
 
         changePage(7)
@@ -539,7 +546,7 @@ class userSearchWindow(QMainWindow):
         self.back_BTN.clicked.connect(lambda : self.leave_reset(6))
         self.listWidget.itemClicked.connect(self.go_see_detail)
 
-        self.load_data_show()
+        # self.load_data_show()
 
     def leave_reset(self, page):
         self.listWidget.clear()
@@ -575,11 +582,15 @@ class userMailWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI/user_mail.ui', self)
+        self.originate_c=[]
+        self.originate_u=[]
         self.logout_BTN.clicked.connect(lambda : changePage(0))
-        self.back_BTN.clicked.connect(lambda : changePage(4))
+        # self.back_BTN.clicked.connect(lambda : changePage(4))
+        self.back_BTN.clicked.connect(self.search_apply)
+
         self.scrollAreaWidgetContents.hide()
-        self.get_user_send_result()
-        self.get_invite()
+        # self.get_user_send_result()
+        # self.get_invite()
         self.send_result_comboBox.currentIndexChanged.connect(self.show_result_detail)
         self.invite_comboBox.currentIndexChanged.connect(self.show_invite_detail)
         # self.accept_BTN.clicked.connect(self.send_accept_request)
@@ -604,9 +615,14 @@ class userMailWindow(QMainWindow):
     def show_result_detail(self):
         if self.send_result_comboBox.currentText() == '-':
             self.scrollAreaWidgetContents.hide()
+
         else:
             self.invite_comboBox.setCurrentIndex(0)
+            self.company_name_show.setText(self.originate_c['title'])
+            self.address_input.setPlainText(self.originate_c['address'])
+            
             self.scrollAreaWidgetContents.show()
+            
             self.accept_BTN.hide()
             self.reject_BTN.hide()
 
@@ -619,15 +635,46 @@ class userMailWindow(QMainWindow):
             self.accept_BTN.show()
             self.reject_BTN.show()
             # self.decision_BTN_off()
+
+    def search_apply(self):
+        send_data={
+            'user_id':user_id
+        }
+        send_data_json=json.dumps(send_data)
+        r = requests.post(url + 'apply_search', json=send_data_json)
+        r=json.loads(r.text)
+        print('apply=',r)
+        
+        if r['status']=='OK':
+            for item in r['description']:
+                if item['originate']=='company':
+                    self.originate_c.append(item)
+                    self.invite_comboBox.addItem('{}, {}'.format(item['name'],item['title']))
+                    # self.address_input.setPlainText(item['address'])
+                else:
+                    self.originate_u.append(item)
+                    self.send_result_comboBox.addItem('{}, {}'.format(item['name'],item['title']))
+
+
+        # print('from u=',self.originate_u)
+        # print('from c=',self.originate_c)
+        
+
+
         
 
     def get_user_send_result(self):
         #######################################################################################此處取得投遞資料
-        self.send_result_comboBox.addItem('國泰金控，軟體工程師')
+        print('get_user_send_result=',self.originate_c)
+        for item in self.originate_u:
+            self.send_result_comboBox.addItem('{}, {}'.format(item['name'],item['title']))
 
     def get_invite(self):
         #######################################################################################此處取得邀請資料
-        self.invite_comboBox.addItem('慧邦科技，軟體工程師')
+        # self.invite_comboBox.addItem('慧邦科技，軟體工程師')
+        print('get_user_send_result=',self.originate_c)
+        for item in self.originate_c:
+            self.invite_comboBox.addItem('{}, {}'.format(item['name'],item['title']))
 
     # def user_send_result(self):
 
