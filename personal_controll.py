@@ -400,7 +400,7 @@ class userResumeWindow(QMainWindow):
 
         else:
             self.salary_type_comboBox.setCurrentText('月薪')
-            self.salary_input.setText(r['description'][0]['monthSalary'])
+            self.salary_input.setText(str(r['description'][0]['monthSalary']))
         self.skill_input.setText(r['description'][0]['skill'])
         self.profile_input.setText(r['description'][0]['profile'])
 
@@ -516,6 +516,8 @@ class userSearchEngineWindow(QMainWindow):
             yearSalary = 0
 
         send_data = {'text' : self.keyword_input.text(), 'place' : place, 'salary':['hourSalary',hourSalary]}
+        if self.place_comboBox.currentIndex() == 0:
+            send_data.pop('place')
         print(send_data)
         send_data_json=json.dumps(send_data)
         r=requests.post(url+'job_textSplit_complexSearch',json=send_data_json)

@@ -27,7 +27,7 @@ def backInit():
 class companyInitialWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_init.ui', self)
+        loadUi('UI/company_init.ui', self)
         self.company_join_BTN.clicked.connect(companyRegisterPage)
         self.company_login_BTN.clicked.connect(companyLoginPage)
 
