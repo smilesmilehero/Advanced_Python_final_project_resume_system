@@ -658,7 +658,6 @@ class userMailWindow(QMainWindow):
             self.scrollAreaWidgetContents.hide()
         else:
             self.invite_comboBox.setCurrentIndex(0)
-            # TODO 回填資料
             self.company_name_show.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['title'])
             self.type_comboBox.setText(
                 self.originate_u[self.send_result_comboBox.currentIndex() - 1]['employment_type'])
@@ -667,16 +666,6 @@ class userMailWindow(QMainWindow):
             self.address_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['address'])
             self.skill_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['qualifications_skills'])
             self.profile_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['description'])
-
-            # dateString = self.originate_u[self.send_result_comboBox.currentIndex() - 1]['post_time']
-            # from datetime import datetime
-            # format = '%a, %d %b %Y %H:%M:%S GMT'
-            # print(datetime.strptime(dateString, format))
-
-            # from datetime import datetime
-            # dateString = self.originate_u[self.send_result_comboBox.currentIndex() - 1]['post_time']
-            # format = '%a, %d %b %Y %H:%M:%S GMT'
-            # print(datetime.strptime(dateString, format))
 
             self.post_dateEdit.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['post_time'][:-12])
             self.telephone_input.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['phone'])
@@ -697,6 +686,31 @@ class userMailWindow(QMainWindow):
             self.scrollAreaWidgetContents.hide()
         else:
             self.send_result_comboBox.setCurrentIndex(0)
+
+            self.company_name_show.setText(self.originate_c[self.invite_comboBox.currentIndex() - 1]['title'])
+            self.type_comboBox.setText(
+                self.originate_c[self.invite_comboBox.currentIndex() - 1]['employment_type'])
+            self.applicant_show.setText(
+                str(self.originate_c[self.invite_comboBox.currentIndex() - 1]['applicants']))
+            self.work_where_comboBox.setCurrentText(
+                self.originate_c[self.invite_comboBox.currentIndex() - 1]['place'])
+            self.address_input.setPlainText(self.originate_c[self.invite_comboBox.currentIndex() - 1]['address'])
+            self.skill_input.setPlainText(
+                self.originate_c[self.invite_comboBox.currentIndex() - 1]['qualifications_skills'])
+            self.profile_input.setPlainText(
+                self.originate_c[self.invite_comboBox.currentIndex() - 1]['description'])
+
+            self.post_dateEdit.setText(
+                self.originate_c[self.invite_comboBox.currentIndex() - 1]['post_time'][:-12])
+            self.telephone_input.setText(self.originate_c[self.invite_comboBox.currentIndex() - 1]['phone'])
+            if self.originate_c[self.invite_comboBox.currentIndex() - 1]['yearSalary'] == 0:
+                self.salary_type_comboBox.setCurrentText('面議')
+                self.want_salary_input.setText('')
+            else:
+                self.salary_type_comboBox.setCurrentText('月薪')
+                self.want_salary_input.setText(
+                    str(self.originate_c[self.invite_comboBox.currentIndex() - 1]['monthSalary']))
+
 
             self.scrollAreaWidgetContents.show()
             self.accept_BTN.show()
