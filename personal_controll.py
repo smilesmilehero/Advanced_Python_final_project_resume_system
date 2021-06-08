@@ -656,6 +656,8 @@ class userMailWindow(QMainWindow):
     def show_result_detail(self):
         if self.send_result_comboBox.currentText() == '-':
             self.scrollAreaWidgetContents.hide()
+            self.result_label.setText('')
+
         else:
             self.invite_comboBox.setCurrentIndex(0)
             self.company_name_show.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['title'])
@@ -676,6 +678,7 @@ class userMailWindow(QMainWindow):
                 self.salary_type_comboBox.setCurrentText('月薪')
                 self.want_salary_input.setText(str(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['monthSalary']))
 
+            self.result_label.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['status'])
             self.scrollAreaWidgetContents.show()
 
             self.accept_BTN.hide()
@@ -684,6 +687,8 @@ class userMailWindow(QMainWindow):
     def show_invite_detail(self):
         if self.invite_comboBox.currentText() == '-':
             self.scrollAreaWidgetContents.hide()
+            self.result_label.setText('')
+
         else:
             self.send_result_comboBox.setCurrentIndex(0)
 
@@ -711,7 +716,7 @@ class userMailWindow(QMainWindow):
                 self.want_salary_input.setText(
                     str(self.originate_c[self.invite_comboBox.currentIndex() - 1]['monthSalary']))
 
-
+            self.result_label.setText(self.originate_c[self.send_result_comboBox.currentIndex() - 1]['status'])
             self.scrollAreaWidgetContents.show()
             self.accept_BTN.show()
             self.reject_BTN.show()
