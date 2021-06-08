@@ -151,9 +151,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>0</y>
+           <y>-216</y>
            <width>755</width>
-           <height>1026</height>
+           <height>1023</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
@@ -843,176 +843,6 @@
               </property>
              </widget>
             </item>
-            <item row="13" column="1">
-             <widget class="QComboBox" name="department_comboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>250</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <underline>false</underline>
-                <strikeout>false</strikeout>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>PointingHandCursor</cursorShape>
-              </property>
-              <property name="tabletTracking">
-               <bool>false</bool>
-              </property>
-              <property name="toolTipDuration">
-               <number>-1</number>
-              </property>
-              <property name="inputMethodHints">
-               <set>Qt::ImhNone</set>
-              </property>
-              <property name="editable">
-               <bool>false</bool>
-              </property>
-              <property name="currentText">
-               <string>請選擇科系類別</string>
-              </property>
-              <property name="frame">
-               <bool>true</bool>
-              </property>
-              <item>
-               <property name="text">
-                <string>請選擇科系類別</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>商業及管理學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>經濟社會及心理學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>軍警國防安全學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>運輸服務學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>電算機學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>農林漁牧學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>教育學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>設計學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>民生休閒及體育學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>法律學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>數學統計學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>工業技藝及機械學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>生命科學學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>醫藥衛生學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>大眾傳播學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>建築與都市規劃學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>語文及人文學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>社會服務學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>工程學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>資訊科學學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>自然科學學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>環境保護學門</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>藝術學門</string>
-               </property>
-              </item>
-             </widget>
-            </item>
             <item row="17" column="0">
              <widget class="QLineEdit" name="salary_input">
               <property name="enabled">
@@ -1071,7 +901,7 @@
                </font>
               </property>
               <property name="text">
-               <string>科系性質</string>
+               <string>科系</string>
               </property>
              </widget>
             </item>
@@ -1247,6 +1077,30 @@
                <font>
                 <pointsize>14</pointsize>
                </font>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QLineEdit" name="department_input">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>250</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="placeholderText">
+               <string/>
               </property>
              </widget>
             </item>

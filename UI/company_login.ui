@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>837</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
@@ -221,7 +221,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="email_phone_input">
+         <widget class="QLineEdit" name="email_input">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
