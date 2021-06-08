@@ -265,7 +265,7 @@ class userResumeWindow(QMainWindow):
         self.work_search_BTN.clicked.connect(lambda: self.leavePage_function(5))
         self.update_modify_BTN.clicked.connect(self.update_modify)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
-        self.mail_BTN.clicked.connect(lambda: self.leavePage_function(7))
+        self.mail_BTN.clicked.connect(self.go_mail)
 
     def reset(self):
         self.name_input.clear()
@@ -360,13 +360,13 @@ class userResumeWindow(QMainWindow):
 
             self.upload_data()
 
-            self.reset()
+            # self.reset()
             changePage(page)
         elif reply == 8388608:
-            self.reset()
+            # self.reset()
             changePage(page)
         elif reply == -1:
-            self.reset()
+            # self.reset()
             changePage(page)
         else:
             changePage(0)  ###不用會卡視窗
@@ -411,7 +411,7 @@ class userResumeWindow(QMainWindow):
         self.education_comboBox.setCurrentText(r['description'][0]['education'])
         self.email_input.setText(r['description'][0]['email'])
         self.school_input.setText(r['description'][0]['school'])
-        self.department_comboBox.setCurrentText(r['description'][0]['department'])
+        self.department_input.setText(r['description'][0]['department'])
         self.place_comboBox.setCurrentText(r['description'][0]['place'])
         if r['description'][0]['yearSalary'] == 0:
             self.salary_type_comboBox.setCurrentText('面議')
@@ -457,23 +457,23 @@ class userResumeWindow(QMainWindow):
     #         self.reset()
     #         changePage(6)
 
-    # def go_mail(self):
-    #     reply = self.leave_page()
-    #     if reply == 2048:
-    #         self.upload_data()
-    #         self.reset()
-    #         changePage(8)
-    #         print(reply)
-    #         addUserMailPage.search_apply()
-    #     elif reply == 8388608:
-    #         changePage(0)           ###不用會卡視窗
-    #         changePage(4)
-    #         print(reply)
-    #     else:
-    #         print(reply)
-    #         self.reset()
-    #         changePage(8)
-    #         addUserMailPage.search_apply()
+    def go_mail(self):
+        reply = self.leave_page()
+        if reply == 2048:
+            self.upload_data()
+            # self.reset()
+            changePage(7)
+            print(reply)
+            addUserMailPage.search_apply()
+        elif reply == 8388608:
+            changePage(0)           ###不用會卡視窗
+            changePage(4)
+            print(reply)
+        else:
+            print(reply)
+            # self.reset()
+            changePage(7)
+            addUserMailPage.search_apply()
         
 class userSearchEngineWindow(QMainWindow):    
     def __init__(self):
