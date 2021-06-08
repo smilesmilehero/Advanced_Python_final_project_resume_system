@@ -446,16 +446,17 @@ class userResumeWindow(QMainWindow):
     #     if reply == 2048:
 
     #         self.upload_data()
-
-
-    #         self.reset()
-    #         changePage(6)
-    #     elif reply == 8388608:
-    #         changePage(0)           ###不用會卡視窗
-    #         changePage(4)
-    #     else:
-    #         self.reset()
-    #         changePage(6)
+    #         changePage(5)
+    #         addUserSearchEngine.send_search()
+            
+        # elif reply == 8388608:
+        #     changePage(0)           ###不用會卡視窗
+        #     changePage(4)
+        # else:
+        #     self.reset()
+        #     changePage(5)
+        #     addUserSearchEngine.send_search()
+        
 
     def go_mail(self):
         reply = self.leave_page()
@@ -463,14 +464,14 @@ class userResumeWindow(QMainWindow):
             self.upload_data()
             # self.reset()
             changePage(7)
-            print(reply)
+            # print(reply)
             addUserMailPage.search_apply()
         elif reply == 8388608:
             changePage(0)           ###不用會卡視窗
             changePage(4)
-            print(reply)
+            # print(reply)
         else:
-            print(reply)
+            # print(reply)
             # self.reset()
             changePage(7)
             addUserMailPage.search_apply()
@@ -486,6 +487,7 @@ class userSearchEngineWindow(QMainWindow):
         self.salary_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
         self.search_BTN.clicked.connect(self.send_search)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
+        self.response=None
 
     def activate_salary_input(self):
         if self.salary_type_comboBox.currentIndex() != 0:
@@ -543,9 +545,9 @@ class userSearchEngineWindow(QMainWindow):
         print(send_data)
         send_data_json = json.dumps(send_data)
         r = requests.post(url + 'job_textSplit_complexSearch', json=send_data_json)
-        r = json.loads(r.text)
-        print(r)
-        userSearchWindow().load_data_show()
+        self.response = json.loads(r.text)
+        print(self.response)
+        addUserSearchResult.load_data_show()
         ####################################################################上傳搜尋資料
 
         self.reset_leavePage(6)
@@ -561,8 +563,9 @@ class userSearchWindow(QMainWindow):
         self.logout_BTN.clicked.connect(lambda: self.leave_reset(0))
         self.back_BTN.clicked.connect(lambda: self.leave_reset(5))
         self.listWidget.itemClicked.connect(self.go_see_detail)
+        self.index=None
 
-        self.load_data_show()
+        # self.load_data_show()
 
     def leave_reset(self, page):
         self.listWidget.clear()
@@ -572,25 +575,21 @@ class userSearchWindow(QMainWindow):
         ################################################################讀取搜尋進listWidget
 
         self.listWidget.clear()
-
-        self.example_data = [{'company_name': '慧邦科技', 'job_title': '軟體工程師', 'post_date': '2021/01/30'},
-                             {'company_name': '國泰金控', 'job_title': '軟體工程師', 'post_date': '2020/11/15'},
-                             {'company_name': '毅山科技', 'job_title': '軟體工程師', 'post_date': '2021/09/30'}]
-
-        add_text = []
-        for i in range(len(self.example_data)):
-            add_text.append(self.example_data[i]['company_name'] + ',' + self.example_data[i]['job_title'] + ',' +
-                            self.example_data[i]['post_date'])
+        response=addUserSearchEngine.response
+    
+        for job in response['description']:
             self.listWidget.addItem(
-                self.example_data[i]['company_name'] + ',' + self.example_data[i]['job_title'] + ',' +
-                self.example_data[i]['post_date'])
-        print(add_text)
+                '{}, {}'.format(job['name'],job['title'])
+                )
+        
 
     def go_see_detail(self):
         # TODO 將點選到的資料上傳
         print(self.listWidget.currentRow())
+        self.index=self.listWidget.currentRow()
         # send_data = self.example_data({'company_name' : self.example_data[self.listWidget.currentRow()]['company_name'], 'job_title' : self.example_data[self.listWidget.currentRow()]['job_title'], 'post_data' : self.example_data[self.listWidget.currentRow()]['post_date']})
         ######################################################################################################將點選到的資料上傳
+        addLookCompanyInfo.load_data()
         changePage(8)
 
 
@@ -771,31 +770,41 @@ class lookCompanyWindow(QMainWindow):
         loadUi('UI/user_look_requirement.ui', self)
         self.back_BTN.clicked.connect(lambda: self.leave_reset(6))
         self.send_resume_BTN.clicked.connect(self.send_invite)
-        self.load_data()
+        # self.load_data()
+        self.job_id=None
 
     # def send_resume(self):
     ####################################################################送出求職訊息
 
     def load_data(self):
         ###################################################################接收要顯示的訊息
-        example_data = {'job_name': '軟體工程師', 'post_date': '2021/01/30', 'job_type': '工讀', 'phone': '0223917925',
-                        'applicant': '6', 'address': '台北市中正區', 'place': '台北市', 'salary': '40000',
-                        'skill': 'python, java', 'profile': '你知道的'}
-        self.company_name_show.setText(example_data['job_name'])
-        self.type_comboBox.setCurrentIndex(self.type_comboBox.findText(example_data['job_type']))
-        self.dateEdit_2.setDate(QtCore.QDate.fromString(example_data['post_date'], 'yyyy/MM/dd'))
-        self.telephone_input.setText(example_data['phone'])
-        self.applicant_show.setText(example_data['applicant'])
-        self.address_input.setPlainText(example_data['address'])
-        self.place_comboBox.setCurrentIndex(self.place_comboBox.findText(example_data['place']))
-        self.salary_type_comboBox.setCurrentIndex(self.type_comboBox.findText(example_data['job_type']))
-        self.salary_input.setText(example_data['salary'])
-        self.skill_require_input.setPlainText(example_data['skill'])
-        self.profile_input.setPlainText(example_data['profile'])
+        # example_data = {'job_name': '軟體工程師', 'post_date': '2021/01/30', 'job_type': '工讀', 'phone': '0223917925',
+        #                 'applicant': '6', 'address': '台北市中正區', 'place': '台北市', 'salary': '40000',
+        #                 'skill': 'python, java', 'profile': '你知道的'}
+        response = addUserSearchEngine.response
+        response=response['description'][addUserSearchResult.index]
+        self.job_id=response['job_id']
+
+        self.company_name_show.setText(response['name'])
+        self.type_comboBox.setCurrentIndex(self.type_comboBox.findText(response['employment_type']))
+        self.dateEdit_2.setText(response['post_time'][:-12])
+        self.telephone_input.setText(response['phone'])
+        self.applicant_show.setText(str(response['applicants']))
+        self.address_input.setPlainText(response['address'])
+        self.place_comboBox.setCurrentIndex(self.place_comboBox.findText(response['place']))
+        if response['yearSalary'] == 0:
+            self.salary_type_comboBox.setCurrentText('面議')
+            self.salary_input.setText('')
+        else:
+            self.salary_type_comboBox.setCurrentText('月薪')
+            self.salary_input.setText(str(response['monthSalary']))
+
+        self.skill_require_input.setPlainText(response['qualifications_skills'])
+        self.profile_input.setPlainText(response['description'])
 
     def send_invite(self):
         # TODO send_invite 需接從search頁面點選的工作 index (find job_id)
-        job_id = 3
+        job_id = self.job_id
         send_data = {'table': 'applys', 'user_id': user_id,
                      'job_id': job_id, 'originate': 'user', 'status': 'No Reply'}
         send_data_json = json.dumps(send_data)
@@ -811,9 +820,9 @@ class lookCompanyWindow(QMainWindow):
         # self.dateEdit_2.disconnect()
         self.company_name_show.clear()
         self.type_comboBox.setCurrentIndex(0)
-        self.dateEdit_2.setDate(QtCore.QDate.fromString('2001/01/01', 'yyyy/MM/dd'))
+        self.dateEdit_2.setText('')
         self.telephone_input.clear()
-        self.applicant_show.setText('0')
+        self.applicant_show.setText('')
         self.address_input.clear()
         self.place_comboBox.setCurrentIndex(0)
         self.salary_type_comboBox.setCurrentIndex(0)
