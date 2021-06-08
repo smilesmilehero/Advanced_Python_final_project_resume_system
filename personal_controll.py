@@ -175,8 +175,8 @@ class userLoginWindow(QMainWindow):
         global user_id
         print('company_checkLogin--------------------', r)
         if r["status"] == 'ok':
-            user_id = r['description']['user_id']
-            # userResumeWindow().loading_data()         #導入初始對應資料(如果有的話)
+            user_id=r['description']['user_id']
+            addUserResumePage.loading_data()         #導入初始對應資料(如果有的話)
             self.info_label.setText('')
             changePage(4)
         else:  ########################################錯誤訊息
@@ -440,13 +440,14 @@ class userResumeWindow(QMainWindow):
         else:
             self.salary_input.setEnabled(False)
 
+
     # def search_job(self):
     #     reply = self.leave_page()
     #     if reply == 2048:
-    #
+
     #         self.upload_data()
-    #
-    #
+
+
     #         self.reset()
     #         changePage(6)
     #     elif reply == 8388608:
@@ -455,7 +456,7 @@ class userResumeWindow(QMainWindow):
     #     else:
     #         self.reset()
     #         changePage(6)
-    #
+
     # def go_mail(self):
     #     reply = self.leave_page()
     #     if reply == 2048:
@@ -463,7 +464,7 @@ class userResumeWindow(QMainWindow):
     #         self.reset()
     #         changePage(8)
     #         print(reply)
-    #         userMailWindow().search_apply()
+    #         addUserMailPage.search_apply()
     #     elif reply == 8388608:
     #         changePage(0)           ###不用會卡視窗
     #         changePage(4)
@@ -472,10 +473,9 @@ class userResumeWindow(QMainWindow):
     #         print(reply)
     #         self.reset()
     #         changePage(8)
-    #         userMailWindow().search_apply()
-
-
-class userSearchEngineWindow(QMainWindow):
+    #         addUserMailPage.search_apply()
+        
+class userSearchEngineWindow(QMainWindow):    
     def __init__(self):
         super().__init__()
         loadUi('UI/user_search_engine.ui', self)
@@ -598,11 +598,11 @@ class userMailWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI/user_mail.ui', self)
-        self.originate_c = []
-        self.originate_u = []
-        self.logout_BTN.clicked.connect(lambda: changePage(0))
-        # self.back_BTN.clicked.connect(lambda : changePage(4))
-        self.back_BTN.clicked.connect(self.search_apply)  # for test
+        self.originate_c=[]
+        self.originate_u=[]
+        self.logout_BTN.clicked.connect(lambda : changePage(0))
+        self.back_BTN.clicked.connect(lambda : changePage(4))
+        # self.back_BTN.clicked.connect(self.search_apply)
 
         self.scrollAreaWidgetContents.hide()
         # self.get_user_send_result()
@@ -658,7 +658,8 @@ class userMailWindow(QMainWindow):
             self.scrollAreaWidgetContents.hide()
             self.result_label.setText('')
 
-        else:
+        elif self.send_result_comboBox.currentIndex()>0:
+            print(self.send_result_comboBox.currentIndex())
             self.invite_comboBox.setCurrentIndex(0)
             self.company_name_show.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['title'])
             self.type_comboBox.setText(
@@ -688,8 +689,7 @@ class userMailWindow(QMainWindow):
         if self.invite_comboBox.currentText() == '-':
             self.scrollAreaWidgetContents.hide()
             self.result_label.setText('')
-
-        else:
+        elif self.invite_comboBox.currentIndex()>0:
             self.send_result_comboBox.setCurrentIndex(0)
 
             self.company_name_show.setText(self.originate_c[self.invite_comboBox.currentIndex() - 1]['title'])
@@ -728,10 +728,15 @@ class userMailWindow(QMainWindow):
         }
         send_data_json = json.dumps(send_data)
         r = requests.post(url + 'apply_search', json=send_data_json)
-        r = json.loads(r.text)
-        print('apply=', r)
-
-        if r['status'] == 'OK':
+        r=json.loads(r.text)
+        print('apply=',r)
+        self.invite_comboBox.setCurrentIndex(0)
+        self.send_result_comboBox.setCurrentIndex(0)
+        self.invite_comboBox.clear()
+        self.send_result_comboBox.clear()
+        self.invite_comboBox.addItem('{}'.format('-'))
+        self.send_result_comboBox.addItem('{}'.format('-'))
+        if r['status']=='OK':
             for item in r['description']:
                 if item['originate'] == 'company':
                     self.originate_c.append(item)
@@ -822,8 +827,8 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     wiget = QtWidgets.QStackedWidget()
     addMainWindow = presonalInitialWindow()
-    addUserRegisterPage = userRegisterWindow()
     addUserLoginPage = userLoginWindow()
+    addUserRegisterPage = userRegisterWindow()
     addForgetPassPage = forgetPSWindow()
     addUserResumePage = userResumeWindow()
     # addChangeInterface = changePSWindow()
