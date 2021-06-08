@@ -18,7 +18,7 @@ def changePage(page):
 class companyInitialWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_init.ui', self)
+        loadUi('UI/company_init.ui', self)
         self.company_join_BTN.clicked.connect(lambda :changePage(1))
         self.company_login_BTN.clicked.connect(lambda : changePage(2))
 
@@ -26,7 +26,7 @@ class companyInitialWindow(QMainWindow):
 class companyRegisterWindow(QMainWindow):                                               ##公司相關介面
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_register.ui', self)
+        loadUi('UI/company_register.ui', self)
         self.back_BTN.clicked.connect(lambda : self.clear_and_changePage(0))
         self.email_input.setMaxLength(50)
         self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
@@ -94,7 +94,7 @@ class companyRegisterWindow(QMainWindow):                                       
 class companyLoginWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_login.ui', self)
+        loadUi('UI/company_login.ui', self)
         self.back_BTN.clicked.connect(lambda : changePage(0))
         self.email_input.setMaxLength(50)
         self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
@@ -145,7 +145,7 @@ class companyLoginWindow(QMainWindow):
 class forgetPSWindow(QMainWindow):    #####other
     def __init__(self):
         super().__init__()
-        loadUi('UI\\forget_password.ui', self)
+        loadUi('UI/forget_password.ui', self)
         self.back_BTN.clicked.connect(lambda : self.reset_leavePage(0))
         self.email_input.setMaxLength(50)
         self.email_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[A-Za-z0-9@.]+$")))
@@ -167,7 +167,7 @@ class forgetPSWindow(QMainWindow):    #####other
 class companyInterfaceWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_interface.ui', self)
+        loadUi('UI/company_interface.ui', self)
         self.logout_BTN.clicked.connect(lambda : self.leavePage_function(0))
         self.job_manage_BTN.clicked.connect(lambda : self.leavePage_function(5))
         self.email_input.setMaxLength(50)
@@ -246,7 +246,7 @@ class companyInterfaceWindow(QMainWindow):
 class companyJobManagement(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\job_manage_interface.ui', self)
+        loadUi('UI/job_manage_interface.ui', self)
 
         self.telephone_input.setMaxLength(20)
         self.telephone_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
@@ -383,7 +383,7 @@ class companyJobManagement(QMainWindow):
 class companySearchEngineWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_search_engine.ui', self)
+        loadUi('UI/company_search_engine.ui', self)
         self.back_BTN.clicked.connect(lambda : self.reset_leavePage(5))
         self.search_BTN.setStyleSheet("QPushButton{border-image: url(UI/magnifying_glass.png)}")
         self.search_BTN.clicked.connect(self.search_go)
@@ -454,7 +454,7 @@ class companySearchEngineWindow(QMainWindow):
 class companySearchWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_search_result.ui', self)
+        loadUi('UI/company_search_result.ui', self)
 
         self.logout_BTN.clicked.connect(lambda : self.leave_reset(0))
         self.back_BTN.clicked.connect(lambda : self.leave_reset(6))
@@ -495,7 +495,7 @@ class companySearchWindow(QMainWindow):
 class lookResumeWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi('UI\\company_look_resume.ui', self)
+        loadUi('UI/company_look_resume.ui', self)
         self.back_BTN.clicked.connect(lambda : self.leave_reset(7))
         self.send_resume_BTN.clicked.connect(self.send_invite)
         self.loading_data()
