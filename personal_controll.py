@@ -175,8 +175,8 @@ class userLoginWindow(QMainWindow):
         global user_id
         print('company_checkLogin--------------------', r)
         if r["status"] == 'ok':
-            user_id=r['description']['user_id']
-            addUserResumePage.loading_data()         #導入初始對應資料(如果有的話)
+            user_id = r['description']['user_id']
+            addUserResumePage.loading_data()  # 導入初始對應資料(如果有的話)
             self.info_label.setText('')
             changePage(4)
         else:  ########################################錯誤訊息
@@ -210,7 +210,11 @@ class forgetPSWindow(QMainWindow):  #####other
 
         r = json.loads(r.text)
         print(r)
-        self.reset_leavePage(2)
+        if r['status'] == 'err':
+            self.info_label.setText(r['description'])
+        else:
+            self.info_label.setText(r['description'])
+            self.reset_leavePage(2)
         # changePage(2) ########回到登入頁面
 
 
@@ -266,6 +270,7 @@ class userResumeWindow(QMainWindow):
         self.update_modify_BTN.clicked.connect(self.update_modify)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
         self.mail_BTN.clicked.connect(self.go_mail)
+        # TODO fun incolude leavePage addUserMailPage.search
 
     def reset(self):
         self.name_input.clear()
@@ -440,7 +445,6 @@ class userResumeWindow(QMainWindow):
         else:
             self.salary_input.setEnabled(False)
 
-
     # def search_job(self):
     #     reply = self.leave_page()
     #     if reply == 2048:
@@ -448,15 +452,14 @@ class userResumeWindow(QMainWindow):
     #         self.upload_data()
     #         changePage(5)
     #         addUserSearchEngine.send_search()
-            
-        # elif reply == 8388608:
-        #     changePage(0)           ###不用會卡視窗
-        #     changePage(4)
-        # else:
-        #     self.reset()
-        #     changePage(5)
-        #     addUserSearchEngine.send_search()
-        
+
+    # elif reply == 8388608:
+    #     changePage(0)           ###不用會卡視窗
+    #     changePage(4)
+    # else:
+    #     self.reset()
+    #     changePage(5)
+    #     addUserSearchEngine.send_search()
 
     def go_mail(self):
         reply = self.leave_page()
@@ -467,7 +470,7 @@ class userResumeWindow(QMainWindow):
             # print(reply)
             addUserMailPage.search_apply()
         elif reply == 8388608:
-            changePage(0)           ###不用會卡視窗
+            changePage(0)  ###不用會卡視窗
             changePage(4)
             # print(reply)
         else:
@@ -475,8 +478,9 @@ class userResumeWindow(QMainWindow):
             # self.reset()
             changePage(7)
             addUserMailPage.search_apply()
-        
-class userSearchEngineWindow(QMainWindow):    
+
+
+class userSearchEngineWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI/user_search_engine.ui', self)
@@ -487,7 +491,7 @@ class userSearchEngineWindow(QMainWindow):
         self.salary_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
         self.search_BTN.clicked.connect(self.send_search)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
-        self.response=None
+        self.response = None
 
     def activate_salary_input(self):
         if self.salary_type_comboBox.currentIndex() != 0:
@@ -563,7 +567,7 @@ class userSearchWindow(QMainWindow):
         self.logout_BTN.clicked.connect(lambda: self.leave_reset(0))
         self.back_BTN.clicked.connect(lambda: self.leave_reset(5))
         self.listWidget.itemClicked.connect(self.go_see_detail)
-        self.index=None
+        self.index = None
 
         # self.load_data_show()
 
@@ -575,18 +579,18 @@ class userSearchWindow(QMainWindow):
         ################################################################讀取搜尋進listWidget
 
         self.listWidget.clear()
-        response=addUserSearchEngine.response
-    
+        response = addUserSearchEngine.response
+
         for job in response['description']:
             self.listWidget.addItem(
-                '{}, {}'.format(job['name'],job['title'])
-                )
-        
+                '{}, {}'.format(job['name'], job['title'])
+            )
 
     def go_see_detail(self):
         # TODO 將點選到的資料上傳
         print(self.listWidget.currentRow())
-        self.index=self.listWidget.currentRow()
+        self.index = self.listWidget.currentRow()
+
         # send_data = self.example_data({'company_name' : self.example_data[self.listWidget.currentRow()]['company_name'], 'job_title' : self.example_data[self.listWidget.currentRow()]['job_title'], 'post_data' : self.example_data[self.listWidget.currentRow()]['post_date']})
         ######################################################################################################將點選到的資料上傳
         addLookCompanyInfo.load_data()
@@ -597,10 +601,10 @@ class userMailWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi('UI/user_mail.ui', self)
-        self.originate_c=[]
-        self.originate_u=[]
-        self.logout_BTN.clicked.connect(lambda : changePage(0))
-        self.back_BTN.clicked.connect(lambda : changePage(4))
+        self.originate_c = []
+        self.originate_u = []
+        self.logout_BTN.clicked.connect(lambda: changePage(0))
+        self.back_BTN.clicked.connect(lambda: changePage(4))
         # self.back_BTN.clicked.connect(self.search_apply)
 
         self.scrollAreaWidgetContents.hide()
@@ -657,26 +661,32 @@ class userMailWindow(QMainWindow):
             self.scrollAreaWidgetContents.hide()
             self.result_label.setText('')
 
-        elif self.send_result_comboBox.currentIndex()>0:
+        elif self.send_result_comboBox.currentIndex() > 0:
             print(self.send_result_comboBox.currentIndex())
             self.invite_comboBox.setCurrentIndex(0)
             self.company_name_show.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['title'])
             self.type_comboBox.setText(
                 self.originate_u[self.send_result_comboBox.currentIndex() - 1]['employment_type'])
-            self.applicant_show.setText(str(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['applicants']))
-            self.work_where_comboBox.setCurrentText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['place'])
+            self.applicant_show.setText(
+                str(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['applicants']))
+            self.work_where_comboBox.setCurrentText(
+                self.originate_u[self.send_result_comboBox.currentIndex() - 1]['place'])
             self.address_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['address'])
-            self.skill_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['qualifications_skills'])
-            self.profile_input.setPlainText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['description'])
+            self.skill_input.setPlainText(
+                self.originate_u[self.send_result_comboBox.currentIndex() - 1]['qualifications_skills'])
+            self.profile_input.setPlainText(
+                self.originate_u[self.send_result_comboBox.currentIndex() - 1]['description'])
 
-            self.post_dateEdit.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['post_time'][:-12])
+            self.post_dateEdit.setText(
+                self.originate_u[self.send_result_comboBox.currentIndex() - 1]['post_time'][:-12])
             self.telephone_input.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['phone'])
             if self.originate_u[self.send_result_comboBox.currentIndex() - 1]['yearSalary'] == 0:
                 self.salary_type_comboBox.setCurrentText('面議')
                 self.want_salary_input.setText('')
             else:
                 self.salary_type_comboBox.setCurrentText('月薪')
-                self.want_salary_input.setText(str(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['monthSalary']))
+                self.want_salary_input.setText(
+                    str(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['monthSalary']))
 
             self.result_label.setText(self.originate_u[self.send_result_comboBox.currentIndex() - 1]['status'])
             self.scrollAreaWidgetContents.show()
@@ -688,7 +698,7 @@ class userMailWindow(QMainWindow):
         if self.invite_comboBox.currentText() == '-':
             self.scrollAreaWidgetContents.hide()
             self.result_label.setText('')
-        elif self.invite_comboBox.currentIndex()>0:
+        elif self.invite_comboBox.currentIndex() > 0:
             self.send_result_comboBox.setCurrentIndex(0)
 
             self.company_name_show.setText(self.originate_c[self.invite_comboBox.currentIndex() - 1]['title'])
@@ -727,15 +737,15 @@ class userMailWindow(QMainWindow):
         }
         send_data_json = json.dumps(send_data)
         r = requests.post(url + 'apply_search', json=send_data_json)
-        r=json.loads(r.text)
-        print('apply=',r)
+        r = json.loads(r.text)
+        print('apply=', r)
         self.invite_comboBox.setCurrentIndex(0)
         self.send_result_comboBox.setCurrentIndex(0)
         self.invite_comboBox.clear()
         self.send_result_comboBox.clear()
         self.invite_comboBox.addItem('{}'.format('-'))
         self.send_result_comboBox.addItem('{}'.format('-'))
-        if r['status']=='OK':
+        if r['status'] == 'OK':
             for item in r['description']:
                 if item['originate'] == 'company':
                     self.originate_c.append(item)
@@ -771,7 +781,8 @@ class lookCompanyWindow(QMainWindow):
         self.back_BTN.clicked.connect(lambda: self.leave_reset(6))
         self.send_resume_BTN.clicked.connect(self.send_invite)
         # self.load_data()
-        self.job_id=None
+        self.job_id = None
+        self.applicants = 0
 
     # def send_resume(self):
     ####################################################################送出求職訊息
@@ -782,11 +793,12 @@ class lookCompanyWindow(QMainWindow):
         #                 'applicant': '6', 'address': '台北市中正區', 'place': '台北市', 'salary': '40000',
         #                 'skill': 'python, java', 'profile': '你知道的'}
         response = addUserSearchEngine.response
-        response=response['description'][addUserSearchResult.index]
-        self.job_id=response['job_id']
+        response = response['description'][addUserSearchResult.index]
+        self.job_id = response['job_id']
+        self.applicants = response['applicants']
 
         self.company_name_show.setText(response['name'])
-        self.type_comboBox.setCurrentIndex(self.type_comboBox.findText(response['employment_type']))
+        self.type_comboBox.setText(response['employment_type'])
         self.dateEdit_2.setText(response['post_time'][:-12])
         self.telephone_input.setText(response['phone'])
         self.applicant_show.setText(str(response['applicants']))
@@ -811,6 +823,13 @@ class lookCompanyWindow(QMainWindow):
         r = requests.post(url + 'add_to_table', json=send_data_json)
         r = json.loads(r.text)
         print(r)
+
+        send_data = {'table': 'jobs', 'job_id': self.job_id, 'applicants': self.applicants + 1}
+        send_data_json = json.dumps(send_data)
+        r = requests.post(url + 'add_to_table', json=send_data_json)
+        r = json.loads(r.text)
+        print(r)
+
         ###########################################################################送出面試邀約
         #########################################################################避免重複投同項工作?
 
@@ -819,7 +838,7 @@ class lookCompanyWindow(QMainWindow):
     def leave_reset(self, page):
         # self.dateEdit_2.disconnect()
         self.company_name_show.clear()
-        self.type_comboBox.setCurrentIndex(0)
+        self.type_comboBox.setText('')
         self.dateEdit_2.setText('')
         self.telephone_input.clear()
         self.applicant_show.setText('')

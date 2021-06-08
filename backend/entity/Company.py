@@ -11,7 +11,8 @@ class Company(Base):
     address = Column('address', String)
     employees = Column('employees', String)
     industry = Column('industry', String)
-    description = Column('description', String)
+    profile = Column('profile', String)
+    # description = Column('description', String)
     email = Column('email', String)
 
     def to_dict(self) -> dict:

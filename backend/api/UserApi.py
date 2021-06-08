@@ -184,7 +184,8 @@ class UserApi:
                             status = 'ok'
                             description = 'send to {}'.format(communication_mail)
                         except Exception as e:
-                            description = e
+                            status = 'err'
+                            description = 'sql search err'
                 else:
                     status = 'err'
                     description = 'detail sql search err'
