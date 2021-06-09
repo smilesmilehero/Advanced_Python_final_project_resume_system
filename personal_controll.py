@@ -270,7 +270,7 @@ class userResumeWindow(QMainWindow):
         self.update_modify_BTN.clicked.connect(self.update_modify)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
         self.mail_BTN.clicked.connect(self.go_mail)
-        # TODO fun incolude leavePage addUserMailPage.search
+        # TODO fun include leavePage addUserMailPage.search
 
     def reset(self):
         self.name_input.clear()
@@ -427,8 +427,6 @@ class userResumeWindow(QMainWindow):
             self.salary_input.setText(str(r['description'][0]['monthSalary']))
         self.skill_input.setText(r['description'][0]['skill'])
         self.profile_input.setText(r['description'][0]['profile'])
-
-    #
 
     def update_modify(self):
         if self.name_input.isEnabled() == False:
