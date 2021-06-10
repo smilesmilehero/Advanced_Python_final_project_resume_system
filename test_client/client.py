@@ -120,17 +120,18 @@ url = 'http://127.0.0.1:5000/'
 # send_data = {"table": "users", "user_id": 2}
 # send_data = {"table": "companys", "user_id": 2}
 # send_data = {'user_id': 3, 'title': 'ME engineer'}
-send_data = {'table': 'jobs', 'job_id': 2}
+# send_data = {'table': 'jobs', 'job_id': 2}
+send_data = {'text': '', 'salary': ['hourSalary', None]}
 send_data_json = json.dumps(send_data)
 print(type(send_data_json), send_data_json)
-r = requests.post(url + 'search_from_table', json=send_data_json)
+r = requests.post(url + 'resume_textSplit_complexSearch', json=send_data_json)
 r = json.loads(r.text)
-# print(r)
-print(r['description'][0]['post_time'])
-ts = r['description'][0]['post_time']
-from datetime import datetime
-format = '%a, %d %b %Y %H:%M:%S GMT'
-print(datetime.strptime(ts, format))
+print(r)
+# print(r['description'][0]['post_time'])
+# ts = r['description'][0]['post_time']
+# from datetime import datetime
+# format = '%a, %d %b %Y %H:%M:%S GMT'
+# print(datetime.strptime(ts, format))
 
 # print("{} {} {}".format(r, type(r.text), r.text))
 # r = json.loads(r.text)

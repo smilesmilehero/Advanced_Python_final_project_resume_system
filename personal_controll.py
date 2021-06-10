@@ -813,7 +813,6 @@ class lookCompanyWindow(QMainWindow):
         self.profile_input.setPlainText(response['description'])
 
     def send_invite(self):
-        # TODO send_invite 需接從search頁面點選的工作 index (find job_id)
         job_id = self.job_id
         send_data = {'table': 'applys', 'user_id': user_id,
                      'job_id': job_id, 'originate': 'user', 'status': 'No Reply'}
