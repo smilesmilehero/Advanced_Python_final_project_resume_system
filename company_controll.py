@@ -305,6 +305,7 @@ class companyJobManagement(QMainWindow):
         super().__init__()
         loadUi('UI/job_manage_interface.ui', self)
         self.job_item_list = []
+        self.job_id = None
         self.telephone_input.setMaxLength(20)
         self.telephone_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
         self.salary_input.setMaxLength(20)
@@ -332,6 +333,22 @@ class companyJobManagement(QMainWindow):
     ###################################################################傳送拒絕結果
     # self.decision_BTN_off()
 
+    def salary_type_change(self):
+        if self.salary_type_comboBox.currentIndex() == 1:
+            self.salary_input.setText(
+                str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['hourSalary']))
+        elif self.salary_type_comboBox.currentIndex() == 2:
+            self.salary_input.setText(
+                str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['daySalary']))
+
+        elif self.salary_type_comboBox.currentIndex() == 3:
+            self.salary_input.setText(
+                str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['monthSalary']))
+
+        elif self.salary_type_comboBox.currentIndex() == 4:
+            self.salary_input.setText(
+                str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['yearSalary']))
+
     def decision_BTN_off(self):
         # if                ####################################################################需要有個判斷是否已經回答過邀約的機制
         self.accept_BTN.setEnabled(False)
@@ -345,8 +362,11 @@ class companyJobManagement(QMainWindow):
     def activate_salary_input(self):
         if self.salary_type_comboBox.currentIndex() != 0:
             self.salary_input.setEnabled(True)
+            if self.add_job_and_manage_comboBox.currentIndex() != 1:
+                self.salary_type_change()
         else:
             self.salary_input.setEnabled(False)
+            self.salary_input.setText('')
 
     def Q_switch(self, switch):
         self.company_name_show.setEnabled(switch)
@@ -375,22 +395,38 @@ class companyJobManagement(QMainWindow):
     def job_want_list(self):
         self.interviewer_comboBox.setCurrentIndex(0)
         if self.add_job_and_manage_comboBox.currentText() == '新增工作職缺項目':
+            # 新增時清空欄位
+            self.company_name_show.setText('')
+            self.type_comboBox.setCurrentIndex(0)
+            self.applicant_show.setText('')
+            # TODO 好像沒有地址欄位
+            self.address_input.setPlainText('')
+            self.place_comboBox.setCurrentText('')
+            self.salary_type_comboBox.setCurrentText('面議')
+            self.salary_input.setText('')
+            self.skill_input_2.setPlainText('')
+            self.profile_input_2.setPlainText('')
+            self.telephone_input.setText('')
+
             self.activate_add_new()
             self.post_time_show.setText(QtCore.QDate.currentDate().toString(QtCore.Qt.ISODate))
         elif self.add_job_and_manage_comboBox.currentText() == '-':
             self.stackedWidget.hide()
         elif self.add_job_and_manage_comboBox.currentIndex() > 1:
             self.activate_add_new()
-            print(self.add_job_and_manage_comboBox.currentIndex())
-
-            self.company_name_show.setText(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['title'])
+            print(self.add_job_and_manage_comboBox.currentIndex(),"count", self.add_job_and_manage_comboBox.count())
+            print('self.add_job_and_manage_comboBox====',self.add_job_and_manage_comboBox)
+            self.company_name_show.setText(
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['title'])
             self.type_comboBox.setCurrentText(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['employment_type'])
-            self.applicant_show.setText(str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['applicants']))
-            #TODO 好像沒有地址欄位
+            self.applicant_show.setText(
+                str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['applicants']))
+            # TODO 好像沒有地址欄位
             self.address_input.setPlainText(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
-            self.place_comboBox.setCurrentText(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
+            self.place_comboBox.setCurrentText(
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
             # TODO 薪水
             if self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['yearSalary'] == 0:
                 self.salary_type_comboBox.setCurrentText('面議')
@@ -399,11 +435,12 @@ class companyJobManagement(QMainWindow):
                 self.salary_type_comboBox.setCurrentText('月薪')
                 self.salary_input.setText(
                     str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['monthSalary']))
-            self.skill_input_2.setPlainText(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['qualifications_skills'])
-            self.profile_input_2.setPlainText(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['description'])
-            self.telephone_input.setText(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['phone'])
-
-
+            self.skill_input_2.setPlainText(
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['qualifications_skills'])
+            self.profile_input_2.setPlainText(
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['description'])
+            self.telephone_input.setText(
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['phone'])
 
     def update_save(self):
         if self.company_name_show.text() == '' or self.telephone_input.text() == '' or self.address_input.toPlainText() == '' or self.skill_input_2.toPlainText() == '' or self.profile_input_2.toPlainText() == '' or self.place_comboBox.currentIndex() == 0 or self.type_comboBox.currentIndex() == 0:
@@ -417,18 +454,81 @@ class companyJobManagement(QMainWindow):
                 else:
                     pass
         else:
+            if self.salary_type_comboBox.currentIndex() != 0 and self.salary_input.text() != '':
+                if self.salary_type_comboBox.currentIndex() == 1:
+                    hourSalary = int(self.salary_input.text())
+                    daySalary = hourSalary * 8
+                    monthSalary = daySalary * 22
+                    yearSalary = monthSalary * 12
+                elif self.salary_type_comboBox.currentIndex() == 2:
+                    daySalary = int(self.salary_input.text())
+                    hourSalary = daySalary // 8
+                    monthSalary = daySalary * 22
+                    yearSalary = monthSalary * 12
+                elif self.salary_type_comboBox.currentIndex() == 3:
+                    monthSalary = int(self.salary_input.text())
+                    yearSalary = monthSalary * 12
+                    daySalary = monthSalary // 22
+                    hourSalary = daySalary // 8
+                elif self.salary_type_comboBox.currentIndex() == 4:
+                    yearSalary = int(self.salary_input.text())
+                    monthSalary = yearSalary // 12
+                    daySalary = monthSalary // 22
+                    hourSalary = daySalary // 8
+            else:
+                self.salary_type_comboBox.setCurrentIndex(0)
+                self.salary_input.setEnabled(False)
+                hourSalary = 0
+                daySalary = 0
+                monthSalary = 0
+                yearSalary = 0
 
-            send_data = {'job_name': self.company_name_show.text(), 'post_time': self.post_time_show.text(),
-                         'job_type': self.type_comboBox.currentText(), 'phone': self.telephone_input.text(),
-                         'address': self.address_input.toPlainText(), 'place': self.place_comboBox.currentText(),
-                         'salary_type': self.salary_type_comboBox.currentText(), 'salary': self.salary_input.text(),
-                         'skill': self.skill_input_2.toPlainText(), 'profile': self.profile_input_2.toPlainText()}
-
-            print(send_data)
-
+            send_data = {'table': 'jobs', 'user_id': user_id,
+                         'title': self.company_name_show.text(),
+                         'employment_type': self.type_comboBox.currentText(), 'phone': self.telephone_input.text(),
+                         'place': self.place_comboBox.currentText(),
+                         'qualifications_skills': self.skill_input_2.toPlainText(),
+                         'description': self.profile_input_2.toPlainText(),
+                         'applicants': 0,
+                         'hourSalary': hourSalary, 'daySalary': daySalary,
+                         'monthSalary': monthSalary, 'yearSalary': yearSalary,
+                         # 'post_time': self.post_time_show.text(), 'address': self.address_input.toPlainText()
+                         }
+            if self.add_job_and_manage_comboBox.currentIndex() > 1:
+                send_data = {**send_data,
+                             'job_id': self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2][
+                                 'job_id']}
+            print('send_data---', send_data)
+            send_data_json = json.dumps(send_data)
+            r = requests.post(url + 'add_to_table', json=send_data_json)  # 上傳公司介面資料
+            r = json.loads(r.text)
+            print(r)
             #######################################################################################傳送儲存新資料
 
-            self.add_job_and_manage_comboBox.addItem(send_data['job_name'] + ', ' + send_data['post_time'])  ##添加進列表中
+            if self.add_job_and_manage_comboBox.currentIndex() == 1:  # 新增時
+
+                self.add_job_and_manage_comboBox.addItem(
+                    '{}, {}'.format(send_data['title'], send_data['employment_type']))  # 添加進列表中
+                # 更新job_item_list
+                search_rsp = requests.post(url + 'search_from_table', json=send_data_json)
+                search_rsp = json.loads(search_rsp.text)
+                print('search_rsp=========', search_rsp)
+                if search_rsp['status'] == 'OK':
+                    for item in search_rsp['description']:
+                        print(item)
+                        self.job_item_list.append(item)
+                # 清空欄位
+                self.company_name_show.setText('')
+                self.type_comboBox.setCurrentIndex(0)
+                self.applicant_show.setText('')
+                # TODO 好像沒有地址欄位
+                self.address_input.setPlainText('')
+                self.place_comboBox.setCurrentText('')
+                self.salary_type_comboBox.setCurrentText('面議')
+                self.salary_input.setText('')
+                self.skill_input_2.setPlainText('')
+                self.profile_input_2.setPlainText('')
+                self.telephone_input.setText('')
 
     def reset_all(self):
         self.company_name_show.clear()
@@ -465,7 +565,7 @@ class companyJobManagement(QMainWindow):
         send_data = {
             'table': 'jobs',
             # TODO user id test
-            'user_id': 4
+            'user_id': user_id
         }
         send_data_json = json.dumps(send_data)
         r = requests.post(url + 'search_from_table', json=send_data_json)
@@ -481,13 +581,10 @@ class companyJobManagement(QMainWindow):
         self.interviewer_comboBox.addItem('{}'.format('只是測試'))
 
         print('search_job_item', r)
-        self.job_item_list
         if r['status'] == 'OK':
             for item in r['description']:
                 self.job_item_list.append(item)
                 self.add_job_and_manage_comboBox.addItem('{}, {}'.format(item['title'], item['employment_type']))
-
-        pass
 
 
 class companySearchEngineWindow(QMainWindow):
