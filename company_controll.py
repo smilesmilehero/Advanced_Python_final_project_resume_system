@@ -321,6 +321,7 @@ class companyJobManagement(QMainWindow):
         loadUi('UI/job_manage_interface.ui', self)
         self.job_item_list = []
         self.applicant_list = []
+        self.recruit_list=[]
         self.current_job_id = None
         self.telephone_input.setMaxLength(20)
         self.telephone_input.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("^[0-9]+$")))
@@ -332,14 +333,21 @@ class companyJobManagement(QMainWindow):
         self.update_save_BTN.clicked.connect(self.update_save)
         self.head_hunter_BTN.clicked.connect(lambda: changePage(6))
         self.interviewer_comboBox.currentIndexChanged.connect(self.resume_list)
+        self.recruit_comboBox.currentIndexChanged.connect(self.resume_recruit_list)
         self.add_job_and_manage_comboBox.currentIndexChanged.connect(self.job_want_list)
         self.salary_type_comboBox.currentIndexChanged.connect(self.activate_salary_input)
         self.stackedWidget.hide()
+        self.result_label.hide()
+        self.label_24.hide()
+        self.delete_job_BTN.clicked.connect(self.delete_job)
+        
 
-        self.interviewer_comboBox.addItem('只是測試')  ##########測試顯示第2頁面
+        # self.interviewer_comboBox.addItem('只是測試')  ##########測試顯示第2頁面
 
         self.accept_BTN.clicked.connect(self.send_accept_request)
         self.reject_BTN.clicked.connect(self.send_reject_request)
+
+        
 
     # def send_accept_request(self):
     ###################################################################傳送同意結果
@@ -348,6 +356,32 @@ class companyJobManagement(QMainWindow):
     # def send_reject_request(self):
     ###################################################################傳送拒絕結果
     # self.decision_BTN_off()
+
+    def delete_job(self):
+        job_id=self.job_item_list[self.add_job_and_manage_comboBox.currentIndex()-2]['job_id']
+        send_data={
+            'job_id':job_id,
+            'table':'jobs'
+        }
+        send_data_json=json.dumps(send_data)
+        rsp=requests.post(url+'delete',json=send_data_json)
+        rsp=json.loads(rsp.text)
+        print(rsp)
+
+        send_data={
+            'job_id':job_id,
+            'table':'applys'
+        }
+        send_data_json=json.dumps(send_data)
+        rsp=requests.post(url+'delete',json=send_data_json)
+        rsp=json.loads(rsp.text)
+        print(rsp)
+
+        del self.job_item_list[self.add_job_and_manage_comboBox.currentIndex()-2]
+        self.add_job_and_manage_comboBox.removeItem(self.add_job_and_manage_comboBox.currentIndex())
+        self.add_job_and_manage_comboBox.setCurrentIndex(0)
+        
+        
 
     def send_accept_request(self):
         send_data = {'table': 'applys',
@@ -417,7 +451,7 @@ class companyJobManagement(QMainWindow):
         self.company_name_show.setEnabled(switch)
         self.type_comboBox.setEnabled(switch)
         self.telephone_input.setEnabled(switch)
-        self.address_input.setEnabled(switch)
+        # self.address_input.setEnabled(switch)
         self.place_comboBox.setEnabled(switch)
         self.salary_type_comboBox.setEnabled(switch)
         self.skill_input_2.setEnabled(switch)
@@ -430,11 +464,25 @@ class companyJobManagement(QMainWindow):
 
     def resume_list(self):
         # TODO resume list
-        if self.interviewer_comboBox.currentIndex() == 0 and self.add_job_and_manage_comboBox.currentIndex() > 0:
+        
+        self.accept_BTN.show()
+        self.reject_BTN.show()
+        
+        
+        if self.interviewer_comboBox.currentIndex() != 0:
+            self.recruit_comboBox.setCurrentIndex(0)
+
+        if self.interviewer_comboBox.currentIndex() == 0 and self.add_job_and_manage_comboBox.currentIndex() > 0 and self.recruit_comboBox.currentIndex() == 0:
             self.stackedWidget.setCurrentIndex(0)
+            self.delete_job_BTN.show()
+            self.result_label.hide()
+            self.label_24.hide()
         if self.interviewer_comboBox.currentIndex() == 0:
             self.update_save_BTN.setEnabled(True)
         elif self.interviewer_comboBox.currentIndex() > 0:
+            self.result_label.show()
+            self.label_24.show()
+            self.delete_job_BTN.hide()
             self.update_save_BTN.setEnabled(False)
             self.stackedWidget.setCurrentIndex(1)
             if self.applicant_list[self.interviewer_comboBox.currentIndex() - 1]['status'] == 'No Reply':
@@ -465,10 +513,74 @@ class companyJobManagement(QMainWindow):
                 self.salary_type.setText('月薪')
                 self.salary_label.setText(
                     str(self.applicant_list[self.interviewer_comboBox.currentIndex() - 1]['monthSalary']))
+            self.result_label.setText(self.applicant_list[self.interviewer_comboBox.currentIndex() - 1]['status'])
+    def resume_recruit_list(self):
+        
+        # TODO resume list
+        if self.recruit_comboBox.currentIndex() != 0:
+            self.interviewer_comboBox.setCurrentIndex(0)
+        self.accept_BTN.hide()
+        self.reject_BTN.hide()
+
+
+        if self.recruit_comboBox.currentIndex() == 0 and self.add_job_and_manage_comboBox.currentIndex() > 0 and self.interviewer_comboBox.currentIndex()==0:
+            self.stackedWidget.setCurrentIndex(0)
+            self.result_label.hide()
+            self.label_24.hide()
+            self.delete_job_BTN.show()
+
+        if self.recruit_comboBox.currentIndex() == 0:
+            self.update_save_BTN.setEnabled(True)
+        elif self.recruit_comboBox.currentIndex() > 0:
+            self.result_label.show()
+            self.label_24.show()
+            self.delete_job_BTN.hide()
+            self.update_save_BTN.setEnabled(False)
+            self.stackedWidget.setCurrentIndex(1)
+            if self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['status'] == 'No Reply':
+                self.accept_BTN.setEnabled(True)
+                self.reject_BTN.setEnabled(True)
+            else:
+                self.accept_BTN.setEnabled(False)
+                self.reject_BTN.setEnabled(False)
+            self.name_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['name'])
+            self.gender_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['gender'])
+            self.age_label.setText(str(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['age']))
+            self.soilder_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['military'])
+            self.educarion_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['education'])
+            self.school_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['school'])
+            self.skill_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['skill'])
+            self.profile_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['profile'])
+            self.phone_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['phone'])
+            self.address_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['address'])
+            self.department_label.setText(
+                self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['department'])
+            self.place_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['place'])
+            self.email_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['email'])
+
+            if self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['yearSalary'] == 0:
+                self.salary_type.setText('面議')
+                self.salary_label.setText('')
+            else:
+                self.salary_type.setText('月薪')
+                self.salary_label.setText(
+                    str(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['monthSalary']))
+            self.result_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['status'])
+            
 
     def job_want_list(self):
         self.interviewer_comboBox.setCurrentIndex(0)
+        self.recruit_comboBox.setCurrentIndex(0)
+        self.result_label.hide()
+        self.label_24.hide()
+
+
         if self.add_job_and_manage_comboBox.currentText() == '新增工作職缺項目':
+            self.interviewer_comboBox.clear()
+            self.interviewer_comboBox.addItem('{}'.format('-'))
+            self.recruit_comboBox.clear()
+            self.recruit_comboBox.addItem('{}'.format('-'))
+            
             self.head_hunter_BTN.setEnabled(False)
             # 新增時清空欄位
             self.current_job_id = None
@@ -476,8 +588,8 @@ class companyJobManagement(QMainWindow):
             self.type_comboBox.setCurrentIndex(0)
             self.applicant_show.setText('')
             # TODO 好像沒有地址欄位
-            self.address_input.setPlainText('')
-            self.place_comboBox.setCurrentText('')
+            # self.address_input.setPlainText('')
+            self.place_comboBox.setCurrentIndex(0)
             self.salary_type_comboBox.setCurrentText('面議')
             self.salary_input.setText('')
             self.skill_input_2.setPlainText('')
@@ -488,14 +600,20 @@ class companyJobManagement(QMainWindow):
             self.activate_add_new()
             self.post_time_show.setText(QtCore.QDate.currentDate().toString(QtCore.Qt.ISODate))
         elif self.add_job_and_manage_comboBox.currentText() == '-':
+            self.interviewer_comboBox.clear()
+            self.interviewer_comboBox.addItem('{}'.format('-'))
+            self.recruit_comboBox.clear()
+            self.recruit_comboBox.addItem('{}'.format('-'))
             self.head_hunter_BTN.setEnabled(False)
             self.current_job_id = None
             self.stackedWidget.hide()
         elif self.add_job_and_manage_comboBox.currentIndex() > 1:
+            self.delete_job_BTN.show()
             self.head_hunter_BTN.setEnabled(True)
             self.current_job_id = self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['job_id']
             print('current_job_id==', self.current_job_id)
             self.activate_add_new()
+            print(self.job_item_list)
             self.search_applicant_item(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['job_id'])
             print(self.add_job_and_manage_comboBox.currentIndex(), "count", self.add_job_and_manage_comboBox.count())
@@ -506,8 +624,8 @@ class companyJobManagement(QMainWindow):
             self.applicant_show.setText(
                 str(self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['applicants']))
             # TODO 好像沒有地址欄位
-            self.address_input.setPlainText(
-                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
+            # self.address_input.setPlainText(
+                # self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
             self.place_comboBox.setCurrentText(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['place'])
             if self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['yearSalary'] == 0:
@@ -525,7 +643,7 @@ class companyJobManagement(QMainWindow):
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['phone'])
 
     def update_save(self):
-        if self.company_name_show.text() == '' or self.telephone_input.text() == '' or self.address_input.toPlainText() == '' or self.skill_input_2.toPlainText() == '' or self.profile_input_2.toPlainText() == '' or self.place_comboBox.currentIndex() == 0 or self.type_comboBox.currentIndex() == 0:
+        if self.company_name_show.text() == '' or self.telephone_input.text() == ''  or self.skill_input_2.toPlainText() == '' or self.profile_input_2.toPlainText() == '' or self.place_comboBox.currentIndex() == 0 or self.type_comboBox.currentIndex() == 0:
             reply = QMessageBox.information(self, '提示', '須將表格填寫完全才可儲存!', QMessageBox.Ok | QMessageBox.Close)
 
             if self.add_job_and_manage_comboBox.count() <= 2:
@@ -604,8 +722,8 @@ class companyJobManagement(QMainWindow):
                 self.type_comboBox.setCurrentIndex(0)
                 self.applicant_show.setText('')
                 # TODO 好像沒有地址欄位
-                self.address_input.setPlainText('')
-                self.place_comboBox.setCurrentText('')
+                # self.address_input.setPlainText('')
+                self.place_comboBox.setCurrentIndex(0)
                 self.salary_type_comboBox.setCurrentText('面議')
                 self.salary_input.setText('')
                 self.skill_input_2.setPlainText('')
@@ -618,7 +736,7 @@ class companyJobManagement(QMainWindow):
         self.post_time_show.clear()
         self.applicant_show.setText('0')
         self.telephone_input.clear()
-        self.address_input.clear()
+        # self.address_input.clear()
         # self.work_where_comboBox.setCurrentIndex(0)
         self.salary_type_comboBox.setCurrentIndex(0)
         # self.want_salary_input.clear()
@@ -647,20 +765,30 @@ class companyJobManagement(QMainWindow):
         self.applicant_list = []
         print("job_id====", job_id)
         send_data = {
-            'job_id': job_id, 'originate': 'user'
+            'job_id': job_id
         }
         send_data_json = json.dumps(send_data)
         applicant_rsp = requests.post(url + 'applicant_search', json=send_data_json)
         applicant_rsp = json.loads(applicant_rsp.text)
         self.interviewer_comboBox.clear()
         self.interviewer_comboBox.addItem('{}'.format('-'))
+        self.recruit_comboBox.clear()
+        self.recruit_comboBox.addItem('{}'.format('-'))
         print("search_applicant_item", applicant_rsp)
         if applicant_rsp['status'] == 'OK':
             for applicant in applicant_rsp['description']:
-                self.applicant_list.append(applicant)
-                self.interviewer_comboBox.addItem('{}, {}'.format(applicant['name'], applicant['department']))
+                if applicant['originate']=='user':
+                    self.applicant_list.append(applicant)
+                    self.interviewer_comboBox.addItem('{}, {}'.format(applicant['name'], applicant['department']))
+                else:
+                    self.recruit_list.append(applicant)
+                    self.recruit_comboBox.addItem('{}, {}'.format(applicant['name'], applicant['department'])) 
 
     def search_job_item(self):
+        self.label_24.hide()
+        self.result_label.hide()
+        self.delete_job_BTN.hide()
+
         self.job_item_list = []
         # TODO search_job_item
         send_data = {
@@ -679,7 +807,7 @@ class companyJobManagement(QMainWindow):
         self.add_job_and_manage_comboBox.addItem('{}'.format('新增工作職缺項目'))
         self.interviewer_comboBox.addItem('{}'.format('-'))
         # TODO test
-        self.interviewer_comboBox.addItem('{}'.format('只是測試'))
+        # self.interviewer_comboBox.addItem('{}'.format('只是測試'))
 
         print('search_job_item', r)
         if r['status'] == 'OK':
@@ -809,12 +937,21 @@ class companySearchWindow(QMainWindow):
     def load_data_show(self):
         ################################################################讀取搜尋進listWidget
         # TODO load_data_show
-        self.listWidget.clear()
         resume_item = addCompanySearchEngine.resume_search_response
-        for resume in resume_item['description']:
-            self.listWidget.addItem(
-                '{}, {}'.format(resume['name'], resume['department'])
-            )
+        self.listWidget.clear()
+
+        # for resume in resume_item['description']:
+        #         self.listWidget.addItem(
+        #             '{}, {}'.format(resume['name'], resume['department'])
+        #         )
+        
+        if resume_item['status']=='ok':
+            for resume in resume_item['description']:
+                self.listWidget.addItem(
+                    '{}, {}'.format(resume['name'], resume['department'])
+                )
+        else:
+            print(resume_item)
 
     def go_see_detail(self):
         # print(self.listWidget.currentRow())

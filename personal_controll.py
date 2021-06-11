@@ -410,7 +410,7 @@ class userResumeWindow(QMainWindow):
         self.name_input.setText(r['description'][0]['name'])
         self.phone_input.setText(r['description'][0]['phone'])
         self.gender_comboBox.setCurrentText(r['description'][0]['gender'])
-        self.age_input.setText(str(r['description'][0]['age']))
+        self.age_input.setText(str(r['description'][0]['age'] if r['description'][0]['age'] != None else ''))
         self.address_input.setText(r['description'][0]['address'])
         self.soilder_comboBox.setCurrentText(r['description'][0]['military'])
         self.education_comboBox.setCurrentText(r['description'][0]['education'])
@@ -424,7 +424,7 @@ class userResumeWindow(QMainWindow):
 
         else:
             self.salary_type_comboBox.setCurrentText('月薪')
-            self.salary_input.setText(str(r['description'][0]['monthSalary']))
+            self.salary_input.setText(str(r['description'][0]['monthSalary'] if r['description'][0]['monthSalary']!=None else ""))
         self.skill_input.setText(r['description'][0]['skill'])
         self.profile_input.setText(r['description'][0]['profile'])
 
@@ -743,6 +743,9 @@ class userMailWindow(QMainWindow):
         self.send_result_comboBox.clear()
         self.invite_comboBox.addItem('{}'.format('-'))
         self.send_result_comboBox.addItem('{}'.format('-'))
+        self.originate_c=[]
+        self.originate_u=[]
+
         if r['status'] == 'OK':
             for item in r['description']:
                 if item['originate'] == 'company':

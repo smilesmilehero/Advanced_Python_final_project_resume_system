@@ -183,7 +183,7 @@
          </font>
         </property>
         <property name="text">
-         <string>公司回應狀態:</string>
+         <string>回應狀態:</string>
         </property>
        </widget>
       </item>

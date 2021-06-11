@@ -121,12 +121,14 @@ url = 'http://127.0.0.1:5000/'
 # send_data = {"table": "companys", "user_id": 2}
 # send_data = {'user_id': 3, 'title': 'ME engineer'}
 # send_data = {'table': 'jobs', 'job_id': 2}
-send_data = {'text': '', 'salary': ['hourSalary', None]}
-send_data_json = json.dumps(send_data)
-print(type(send_data_json), send_data_json)
-r = requests.post(url + 'resume_textSplit_complexSearch', json=send_data_json)
-r = json.loads(r.text)
-print(r)
+send_data={
+            'job_id':9,
+            'table':'applys'
+        }
+send_data_json=json.dumps(send_data)
+rsp=requests.post(url+'delete',json=send_data_json)
+rsp=json.loads(rsp.text)
+print(rsp)
 # print(r['description'][0]['post_time'])
 # ts = r['description'][0]['post_time']
 # from datetime import datetime

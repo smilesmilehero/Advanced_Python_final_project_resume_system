@@ -31,9 +31,9 @@ class UserApi:
         app.add_url_rule('/apply_search', methods=['POST'], view_func=self.apply_search)
         app.add_url_rule('/send_mail', methods=['POST'], view_func=self.send_mail)
         app.add_url_rule('/job_textSplit_complexSearch', methods=['POST'], view_func=self.job_textSplit_complexSearch)
-        app.add_url_rule('/job_textSplit_complexSearch', methods=['POST'], view_func=self.job_textSplit_complexSearch)
         app.add_url_rule('/resume_textSplit_complexSearch', methods=['POST'],
                          view_func=self.resume_textSplit_complexSearch)
+        app.add_url_rule('/delete', methods=['POST'], view_func=self.delete)
         # app.add_url_rule('/contain_search', methods=['POST'], view_func=self.contain_search)
         app.add_url_rule('/test', methods=['POST'], view_func=self.test)
         app.add_url_rule('/applicant_search', methods=['POST'], view_func=self.applicant_search)
@@ -176,6 +176,28 @@ class UserApi:
             else:
                 return {'status': 'fail', 'description': 'not found'}
 
+
+    def delete(self):
+
+        data = json.loads(request.get_json())
+        print("type", type(data), data)
+        table = data['table']
+        data.pop('table')
+        print(data)
+        try:
+            rsp = self.service.data_del(table, data)
+            print(rsp)
+            status=rsp['status']
+            description="delete successfuly"
+        except Exception as e:
+            status = "err"
+            description = "sql delete error"
+        return {"status": status, 'description': description}
+
+
+
+
+
     def contain_search(self, data):
         data = json.loads(request.get_json())
         print('data', data)
@@ -187,6 +209,7 @@ class UserApi:
         # V {"account": "jk@gmail"}
         data = json.loads(request.get_json())
         account_rsp = self.service.data_search('users', data)
+        print(account_rsp)
         if account_rsp["status"] == 'ok':
             if len(account_rsp["description"]) > 0:
                 password = account_rsp["description"][0]["password"]
@@ -256,7 +279,7 @@ class UserApi:
         if len(resume_rsp['description']) > 0:
             return resume_rsp
         else:
-            return {'status': 'fail', 'descrition': 'not found'}
+            return {'status': 'fail', 'description': 'not found'}
 
     def test(self):
         data = json.loads(request.get_json())
