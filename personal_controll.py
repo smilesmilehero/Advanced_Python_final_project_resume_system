@@ -833,7 +833,7 @@ class lookCompanyWindow(QMainWindow):
         ###########################################################################送出面試邀約
         #########################################################################避免重複投同項工作?
 
-        reply = QMessageBox.information(self, '提示', '成功發送邀約，請耐心等待對方回應', QMessageBox.Ok | QMessageBox.Close)
+        QMessageBox.information(self, '提示', '成功發送邀約，請耐心等待對方回應', QMessageBox.Ok)
 
     def leave_reset(self, page):
         # self.dateEdit_2.disconnect()

@@ -395,8 +395,7 @@ class companyJobManagement(QMainWindow):
             self.accept_BTN.setEnabled(False)
             self.reject_BTN.setEnabled(False)
             self.applicant_list[self.interviewer_comboBox.currentIndex() - 1]['status'] = 'Accept'
-            # TODO 增加 result info
-            # self.result_label.setText('Accept')
+            self.result_label.setText('Accept')
 
     def send_reject_request(self):
         send_data = {'table': 'applys',
@@ -410,7 +409,7 @@ class companyJobManagement(QMainWindow):
             self.accept_BTN.setEnabled(False)
             self.reject_BTN.setEnabled(False)
             self.applicant_list[self.interviewer_comboBox.currentIndex() - 1]['status'] = 'Reject'
-            # self.result_label.setText('Accept')
+            self.result_label.setText('Reject')
 
     def salary_type_change(self):
         if self.salary_type_comboBox.currentIndex() == 1:
@@ -644,15 +643,15 @@ class companyJobManagement(QMainWindow):
 
     def update_save(self):
         if self.company_name_show.text() == '' or self.telephone_input.text() == ''  or self.skill_input_2.toPlainText() == '' or self.profile_input_2.toPlainText() == '' or self.place_comboBox.currentIndex() == 0 or self.type_comboBox.currentIndex() == 0:
-            reply = QMessageBox.information(self, '提示', '須將表格填寫完全才可儲存!', QMessageBox.Ok | QMessageBox.Close)
+            QMessageBox.information(self, '提示', '須將表格填寫完全才可儲存!', QMessageBox.Ok)
 
-            if self.add_job_and_manage_comboBox.count() <= 2:
-                reply = QMessageBox.information(self, '提示', '此按鈕需先新增工作表，需要新增嗎?', QMessageBox.Ok | QMessageBox.Close)
-                # print(reply)
-                if reply == 1024:
-                    self.activate_add_new()
-                else:
-                    pass
+            # if self.add_job_and_manage_comboBox.count() <= 2:
+            #     reply = QMessageBox.information(self, '提示', '此按鈕需先新增工作表，需要新增嗎?', QMessageBox.Ok | QMessageBox.Close)
+            #     # print(reply)
+            #     if reply == 1024:
+            #         self.activate_add_new()
+            #     else:
+            #         pass
         else:
             if self.salary_type_comboBox.currentIndex() != 0 and self.salary_input.text() != '':
                 if self.salary_type_comboBox.currentIndex() == 1:
@@ -1033,7 +1032,7 @@ class lookResumeWindow(QMainWindow):
         r = json.loads(r.text)
         print(r)
         if r['status']=='ok':
-            reply = QMessageBox.information(self, '提示', '成功發送邀約，請耐心等待對方回應', QMessageBox.Ok | QMessageBox.Close)
+            QMessageBox.information(self, '提示', '成功發送邀約，請耐心等待對方回應', QMessageBox.Ok)
 
     def leave_reset(self, page):
         self.name_show.clear()
