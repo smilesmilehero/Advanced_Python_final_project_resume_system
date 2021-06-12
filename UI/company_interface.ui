@@ -306,7 +306,7 @@
               </property>
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>14</pointsize>
                 <underline>false</underline>
                 <strikeout>false</strikeout>
                </font>
@@ -664,6 +664,11 @@
                 <height>16777215</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
              </widget>
             </item>
             <item row="2" column="2">
@@ -711,6 +716,18 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>job_manage_BTN</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>company_name_input</tabstop>
+  <tabstop>address_input</tabstop>
+  <tabstop>email_input</tabstop>
+  <tabstop>employee_input</tabstop>
+  <tabstop>department_comboBox</tabstop>
+  <tabstop>profile_input</tabstop>
+  <tabstop>update_save_BTN</tabstop>
+  <tabstop>logout_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -620,6 +620,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>keyword_input</tabstop>
+  <tabstop>search_BTN</tabstop>
+  <tabstop>place_comboBox</tabstop>
+  <tabstop>salary_type_comboBox</tabstop>
+  <tabstop>salary_input</tabstop>
+  <tabstop>back_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

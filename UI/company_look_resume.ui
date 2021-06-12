@@ -50,7 +50,7 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-381</y>
+           <y>0</y>
            <width>755</width>
            <height>1065</height>
           </rect>
@@ -957,6 +957,11 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>send_resume_BTN</tabstop>
+  <tabstop>back_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

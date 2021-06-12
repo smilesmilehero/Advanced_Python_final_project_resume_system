@@ -151,7 +151,7 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-216</y>
+           <y>-366</y>
            <width>755</width>
            <height>1023</height>
           </rect>
@@ -1282,6 +1282,28 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>name_input</tabstop>
+  <tabstop>phone_input</tabstop>
+  <tabstop>gender_comboBox</tabstop>
+  <tabstop>address_input</tabstop>
+  <tabstop>age_input</tabstop>
+  <tabstop>soilder_comboBox</tabstop>
+  <tabstop>email_input</tabstop>
+  <tabstop>education_comboBox</tabstop>
+  <tabstop>school_input</tabstop>
+  <tabstop>department_input</tabstop>
+  <tabstop>salary_type_comboBox</tabstop>
+  <tabstop>place_comboBox</tabstop>
+  <tabstop>salary_input</tabstop>
+  <tabstop>skill_input</tabstop>
+  <tabstop>profile_input</tabstop>
+  <tabstop>update_modify_BTN</tabstop>
+  <tabstop>mail_BTN</tabstop>
+  <tabstop>work_search_BTN</tabstop>
+  <tabstop>logout_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
