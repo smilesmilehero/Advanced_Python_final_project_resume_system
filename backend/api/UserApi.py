@@ -227,16 +227,16 @@ class UserApi:
                             description = 'send to {}'.format(communication_mail)
                         except Exception as e:
                             status = 'err'
-                            description = 'sql search err'
+                            description = '該帳號無聯絡email'
                 else:
                     status = 'err'
-                    description = 'detail sql search err'
+                    description = '非註冊帳號'
             else:
                 status = 'err'
-                description = "Account not Found"
+                description = "非註冊帳號"
         else:
             status = 'err'
-            description = 'account sql search err'
+            description = '非註冊帳號'
         return {"status": status, 'description': description}
 
     def test_salary_transform(self):

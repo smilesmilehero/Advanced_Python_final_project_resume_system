@@ -177,9 +177,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>0</y>
-           <width>758</width>
-           <height>884</height>
+           <y>-378</y>
+           <width>755</width>
+           <height>846</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
@@ -3568,6 +3568,21 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>company_name_show</tabstop>
+  <tabstop>dateEdit_2</tabstop>
+  <tabstop>type_comboBox</tabstop>
+  <tabstop>telephone_input</tabstop>
+  <tabstop>address_input</tabstop>
+  <tabstop>place_comboBox</tabstop>
+  <tabstop>salary_type_comboBox</tabstop>
+  <tabstop>salary_input</tabstop>
+  <tabstop>skill_require_input</tabstop>
+  <tabstop>profile_input</tabstop>
+  <tabstop>send_resume_BTN</tabstop>
+  <tabstop>back_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

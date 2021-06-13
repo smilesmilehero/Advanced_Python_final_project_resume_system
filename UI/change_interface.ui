@@ -845,6 +845,12 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>password_input</tabstop>
+  <tabstop>confirm_password_input</tabstop>
+  <tabstop>finish_BTN</tabstop>
+  <tabstop>back_BTN</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

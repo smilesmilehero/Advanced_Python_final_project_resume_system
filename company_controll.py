@@ -1,3 +1,5 @@
+##
+
 import os
 import sys
 from PyQt5.uic import loadUi
@@ -518,8 +520,8 @@ class companyJobManagement(QMainWindow):
         # TODO resume list
         if self.recruit_comboBox.currentIndex() != 0:
             self.interviewer_comboBox.setCurrentIndex(0)
-        self.accept_BTN.hide()
-        self.reject_BTN.hide()
+            self.accept_BTN.hide()
+            self.reject_BTN.hide()
 
 
         if self.recruit_comboBox.currentIndex() == 0 and self.add_job_and_manage_comboBox.currentIndex() > 0 and self.interviewer_comboBox.currentIndex()==0:
@@ -564,6 +566,7 @@ class companyJobManagement(QMainWindow):
                 self.salary_type.setText('月薪')
                 self.salary_label.setText(
                     str(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['monthSalary']))
+            print('=================',self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['status'])
             self.result_label.setText(self.recruit_list[self.recruit_comboBox.currentIndex() - 1]['status'])
             
 
@@ -609,13 +612,14 @@ class companyJobManagement(QMainWindow):
         elif self.add_job_and_manage_comboBox.currentIndex() > 1:
             self.delete_job_BTN.show()
             self.head_hunter_BTN.setEnabled(True)
+            print(self.add_job_and_manage_comboBox.currentIndex(), "count", self.add_job_and_manage_comboBox.count())
+            print("self.job_item_list=",self.job_item_list)
             self.current_job_id = self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['job_id']
             print('current_job_id==', self.current_job_id)
             self.activate_add_new()
             print(self.job_item_list)
             self.search_applicant_item(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['job_id'])
-            print(self.add_job_and_manage_comboBox.currentIndex(), "count", self.add_job_and_manage_comboBox.count())
             self.company_name_show.setText(
                 self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]['title'])
             self.type_comboBox.setCurrentText(
@@ -690,7 +694,7 @@ class companyJobManagement(QMainWindow):
                          'description': self.profile_input_2.toPlainText(),
                          'applicants': 0,
                          'hourSalary': hourSalary, 'daySalary': daySalary,
-                         'monthSalary': monthSalary, 'yearSalary': yearSalary,
+                         'monthSalary': monthSalary, 'yearSalary': yearSalary
                          # 'post_time': self.post_time_show.text(), 'address': self.address_input.toPlainText()
                          }
             if self.add_job_and_manage_comboBox.currentIndex() > 1:
@@ -702,6 +706,11 @@ class companyJobManagement(QMainWindow):
             r = requests.post(url + 'add_to_table', json=send_data_json)  # 上傳公司介面資料
             r = json.loads(r.text)
             print(r)
+            print("=========job_item_list==========",self.job_item_list)
+            send_data.pop('table')
+
+            
+            
             #######################################################################################傳送儲存新資料
 
             if self.add_job_and_manage_comboBox.currentIndex() == 1:  # 新增時
@@ -728,6 +737,9 @@ class companyJobManagement(QMainWindow):
                 self.skill_input_2.setPlainText('')
                 self.profile_input_2.setPlainText('')
                 self.telephone_input.setText('')
+            else:
+                self.job_item_list[self.add_job_and_manage_comboBox.currentIndex() - 2]=send_data
+                self.add_job_and_manage_comboBox.setItemText(self.add_job_and_manage_comboBox.currentIndex(), self.company_name_show.text()+', '+self.type_comboBox.currentText())
 
     def reset_all(self):
         self.company_name_show.clear()
@@ -762,6 +774,7 @@ class companyJobManagement(QMainWindow):
     def search_applicant_item(self, job_id):
         # TODO search_applicant_itme
         self.applicant_list = []
+        self.recruit_list = []
         print("job_id====", job_id)
         send_data = {
             'job_id': job_id

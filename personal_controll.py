@@ -1,3 +1,5 @@
+##
+
 import os
 import sys
 from PyQt5.uic import loadUi
@@ -60,8 +62,9 @@ class userRegisterWindow(QMainWindow):  ##一般用戶介面
             if len(self.email_input.text()) <= 5:
                 self.info_label.setText('Email格式有誤')
             else:
-                if self.email_input.text()[
-                   -4:] == '.com' and '@' in self.email_input.text() and self.email_input.text().count('@') == 1 and \
+                if (self.email_input.text()[
+                   -3:] == '.tw' or self.email_input.text()[
+                   -4:] == '.com') and '@' in self.email_input.text() and self.email_input.text().count('@') == 1 and \
                         self.email_input.text()[0] != '@':
                     if len(self.password_input.text()) >= 6 and len(self.password_input.text()) <= 15:
                         if len(self.confirm_password_input.text()) >= 6 and len(
@@ -214,6 +217,7 @@ class forgetPSWindow(QMainWindow):  #####other
             self.info_label.setText(r['description'])
         else:
             self.info_label.setText(r['description'])
+            QMessageBox.information(self, '信息', '已寄送您的密碼至信箱，請查收後登入', QMessageBox.Ok)
             self.reset_leavePage(2)
         # changePage(2) ########回到登入頁面
 
